@@ -1,0 +1,34 @@
+﻿@typeparam TValue where TValue :struct 
+
+<TextEdit Text="@_showText" TextChanged="SetValue"></TextEdit>
+
+@code
+{
+    [Parameter] public TValue Value { get; set; }
+    
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+
+    private string _showText;
+
+    protected override Task OnInitializedAsync()
+    {
+        _showText = Convert.ToString(Convert.ToInt64(Value) ,2) ;
+        return base.OnInitializedAsync();
+    }
+
+    private async Task SetValue(string valueText)
+    {
+        try
+        {
+            Value = (TValue)Convert.ChangeType(Convert.ToInt64(valueText,2),typeof(TValue)) ;
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+        _showText = Convert.ToString(Convert.ToInt64(Value) ,2) ;
+        
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+}

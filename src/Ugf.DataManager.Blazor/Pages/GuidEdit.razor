@@ -1,0 +1,22 @@
+﻿<TextEdit Text="@Text" TextChanged="SetGuid"></TextEdit>
+
+
+@code {
+
+    [Parameter]
+    public Guid Value { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> ValueChanged { get; set; }
+
+    public string Text => Value.ToString();
+    
+    private async void SetGuid(string str)
+    {
+        if (!Guid.TryParse(str, out Guid id))
+            id = Guid.Empty;
+        await ValueChanged.InvokeAsync(id);
+        Value = id;
+    }
+
+}
