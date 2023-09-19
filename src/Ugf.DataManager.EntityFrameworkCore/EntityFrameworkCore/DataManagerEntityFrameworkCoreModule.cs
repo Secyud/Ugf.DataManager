@@ -42,9 +42,15 @@ namespace Ugf.DataManager.EntityFrameworkCore
                  * default repositories only for aggregate roots */
                 options.AddRepository<ClassContainer, ClassContainerRepository>();
                 options.AddRepository<SpecificObject, SpecificObjectRepository>();
-
+                options.AddRepository<DataConfig, DataConfigRepository>();
+                options.Entity<DataConfig>(u =>
+                {
+                    u.DefaultWithDetailsFunc = 
+                        q => q.Include(u => u.DataConfigItems);
+                });
                 options.AddDefaultRepositories(includeAllEntities: true);
             });
+
 
             Configure<AbpDbContextOptions>(options =>
             {

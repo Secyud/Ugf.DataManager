@@ -98,9 +98,8 @@ namespace Ugf.DataManager.Blazor.Pages
 
         private async Task RefreshClassProperty()
         {
-            await AppService.CheckPropertiesAsync(EditingEntity.Id);
-            EditingProperties = await AppService.GetPropertiesAsync(EditingEntity.Id);
-            await InvokeAsync(StateHasChanged);
+            await AppService.CreateThisAndBase(EditingEntity.Id);
+            await CloseEditModalAsync();
         }
 
         protected override ValueTask SetToolbarItemsAsync()

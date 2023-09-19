@@ -52,6 +52,14 @@ namespace Ugf.DataManager.Blazor.Menus
                     icon: "fas fa-home",
                     order: 0
                 ),
+                new(
+                    DataManagerMenus.ObjectManagement,
+                    l["Menu:Config"],
+                    "/config",
+                    groupName:DataManagerMenus.Config,
+                    icon: "fas fa-home",
+                    order: 0
+                ),
             });
 
             // if (MultiTenancyConsts.IsEnabled)

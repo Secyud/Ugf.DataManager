@@ -1,3 +1,5 @@
+#define DATA_MANAGER
+
 using System;
 using System.IO;
 using Blazorise.Bootstrap5;

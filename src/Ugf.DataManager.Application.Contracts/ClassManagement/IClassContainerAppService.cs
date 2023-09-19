@@ -9,6 +9,7 @@ namespace Ugf.DataManager.ClassManagement
         ICrudAppService<ClassContainerDto,Guid,GetClassListInput>
     {
         Task CheckPropertiesAsync(Guid id);
+        Task CreateThisAndBase(Guid id);
         Task<List<ClassPropertyDto>> GetPropertiesAsync(Guid id);
         Task UpdatePropertiesAsync(List<ClassPropertyDto> properties);
     }

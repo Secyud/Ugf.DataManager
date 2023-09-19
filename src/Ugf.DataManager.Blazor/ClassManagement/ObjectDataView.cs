@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
 using Ugf.DataManager.ClassManagement;
@@ -10,18 +11,26 @@ namespace Ugf.DataManager.Blazor.ClassManagement
     public class ObjectDataView
     {
         public List<Tuple<ClassPropertyDto, SAttribute>> Properties { get; } = new();
-        public PropertyDescriptor Descriptor { get; }
         public object Obj { get; }
 
-        public ObjectDataView(object obj, List<ClassPropertyDto> properties)
+        private ObjectDataView(object obj)
         {
-            Descriptor = U.Factory.InitializeManager.GetProperty(obj.GetType());
-
-            AddProperty(Descriptor.ArchiveProperties, properties);
-            AddProperty(Descriptor.InitialedProperties, properties);
-            AddProperty(Descriptor.IgnoredProperties, properties);
-
             Obj = obj;
+        }
+
+        public static async Task<ObjectDataView> CreateAsync(object obj,IClassContainerAppService appService)
+        {
+            ObjectDataView view = new(obj);
+            PropertyDescriptor descriptor = U.Tm.GetProperty(obj.GetType()).Properties;
+
+            while (descriptor is not null)
+            {
+                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(U.Tm[descriptor.Type]);
+                view.AddProperty(descriptor.Attributes, properties);
+                descriptor = descriptor.BaseProperty;
+            }
+
+            return view;
         }
 
         private void AddProperty(SAttribute[] attributes, List<ClassPropertyDto> properties)
@@ -29,19 +38,19 @@ namespace Ugf.DataManager.Blazor.ClassManagement
             foreach (SAttribute attribute in attributes)
             {
                 ClassPropertyDto p = properties.FirstOrDefault(u =>
-                    u.PropertyId == attribute.ID && u.DataType == (int)attribute.DataType);
+                    u.PropertyName == attribute.Info.Name);
                 Properties.Add(new Tuple<ClassPropertyDto, SAttribute>(p, attribute));
             }
         }
-    
-        public TValue GetValue<TValue>(Tuple<ClassPropertyDto, SAttribute> p)
+
+        public TValue GetValue<TValue>(SAttribute attr)
         {
-            return (TValue)p.Item2.GetValue(Obj);
+            return (TValue)attr.GetValue(Obj);
         }
 
-        public void SetValue(Tuple<ClassPropertyDto, SAttribute> p, object value)
+        public void SetValue(SAttribute attr, object value)
         {
-            p.Item2.SetValue(Obj, value);
+            attr.SetValue(Obj, value);
         }
     }
 }

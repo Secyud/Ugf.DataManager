@@ -7,13 +7,13 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Ugf.DataManager.ClassManagement
 {
-    public interface IClassContainerRepository : IRepository<ClassContainer, Guid>
+    public interface IDataConfigRepository : IRepository<DataConfig, Guid>
     {
-        Task<List<ClassContainer>> GetListAsync(
+        Task<List<DataConfig>> GetListAsync(
             int skipCount, int maxResultCount, string sorting, string name,
             bool includeDetails = false, CancellationToken token = default);
 
-        Task<IQueryable<ClassContainer>> FilteredQueryableAsync(
-            IQueryable<ClassContainer> queryable, string name);
+        Task<IQueryable<DataConfig>> FilteredQueryableAsync(
+            IQueryable<DataConfig> query, string name);
     }
 }

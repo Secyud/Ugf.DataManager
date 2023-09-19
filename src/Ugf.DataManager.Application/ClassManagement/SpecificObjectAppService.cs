@@ -28,9 +28,9 @@ namespace Ugf.DataManager.ClassManagement
                 input.Name, input.BundleId, input.ClassId);
         }
 
-        public Task GenerateConfigAsync(Guid id, int? bundleId)
+        public Task GenerateConfigAsync(List<Guid> ids, string name)
         {
-            return _objectManager.GenerateConfigAsync(id, bundleId);
+            return _objectManager.GenerateConfigAsync(ids, name);
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ugf.DataManager.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -398,8 +398,6 @@ namespace Ugf.DataManager.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PropertyId = table.Column<short>(type: "smallint", nullable: false),
-                    DataType = table.Column<byte>(type: "tinyint", nullable: false),
                     PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -477,9 +475,7 @@ namespace Ugf.DataManager.Migrations
                     ClassId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BundleId = table.Column<int>(type: "int", nullable: false),
-                    ArchivedData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    InitialedData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    IgnoredData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),

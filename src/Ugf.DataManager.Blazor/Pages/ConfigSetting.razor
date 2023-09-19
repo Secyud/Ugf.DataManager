@@ -1,0 +1,50 @@
+﻿@using Secyud.Ugf
+@using Ugf.DataManager.ClassManagement
+@using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns
+@using Volo.Abp.Guids
+
+@inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
+@inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
+
+<Fields>
+    <Field ColumnSize="ColumnSize.Is12">
+        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.SubTypes()"
+                      TextField="u => u.Item1" ValueField="u => u.Item2"
+                      @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
+
+    </Field>
+    <Field ColumnSize="ColumnSize.Is6">
+        <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
+    </Field>
+    <Field ColumnSize="ColumnSize.Is6">
+        <Addons>
+            <Addon AddonType="AddonType.Body">
+                <NumericEdit @bind-Value="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
+
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Clicked="GetEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
+            </Addon>
+        </Addons>
+    </Field>
+</Fields>
+
+<Button Clicked="UpdateAsync" Color="Color.Secondary">
+    @L["Submit"]
+</Button>
+<Button Clicked="SelectAll" Color="Color.Secondary">
+    @L["SelectAll"]
+</Button>
+<Button Clicked="DeSelectAll" Color="Color.Secondary">
+    @L["DeSelectAll"]
+</Button>
+@* ************************* DATA GRID ************************* *@
+<AbpExtensibleDataGrid TItem="SpecificObjectDto"
+                       Data="@Entities"
+                       ReadData="@OnDataGridReadAsync"
+                       TotalItems="@TotalCount"
+                       ShowPager="true"
+                       PageSize="@PageSize"
+                       CurrentPage="@CurrentPage"
+                       Columns="@ObjectTableColumns">
+</AbpExtensibleDataGrid>

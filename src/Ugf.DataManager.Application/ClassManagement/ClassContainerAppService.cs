@@ -27,7 +27,7 @@ namespace Ugf.DataManager.ClassManagement
         {
             return await _repository.FilteredQueryableAsync(
                 await _repository.GetQueryableAsync(),
-                input.Name, input.ClassId);
+                input.Name);
         }
 
         protected override async Task<ClassContainer> GetEntityByIdAsync(Guid id)
@@ -40,41 +40,52 @@ namespace Ugf.DataManager.ClassManagement
 
         public async Task CheckPropertiesAsync(Guid id)
         {
-            List<ClassProperty> deleteProperties = await GetPropertiesByIdAsync(id);
+            List<ClassProperty> deleteProperties = await _propertyRepository
+                .GetListAsync(u => u.ClassId == id);
             List<ClassProperty> insertProperties = new();
             List<ClassProperty> updateProperties = new();
 
-            Type type = TypeIdMapper.GetType(id);
-            PropertyDescriptor descriptor = U.Factory.InitializeManager.GetProperty(type);
-
-            void CheckAttribute(SAttribute[] attributes)
+            Type type = U.Tm[id];
+            TypeDescriptor descriptor = U.Tm.GetProperty(type);
+            PropertyDescriptor propertyDescriptor = descriptor.Properties;
+            foreach (SAttribute attribute in propertyDescriptor.Attributes)
             {
-                foreach (SAttribute attribute in attributes)
-                {
-                    ClassProperty cp = deleteProperties.Find(u =>
-                        u.PropertyId == attribute.ID &&
-                        u.DataType == attribute.DataType);
+                ClassProperty cp = deleteProperties.Find(u => u.PropertyName == attribute.Info.Name);
 
-                    if (cp is null)
-                        insertProperties.Add(new ClassProperty(
-                            GuidGenerator.Create(), TypeIdMapper.GetId(attribute.Belong),
-                            attribute.ID, attribute.DataType, attribute.Info.Name));
-                    else
-                    {
-                        deleteProperties.Remove(cp);
-                        updateProperties.Add(cp);
-                        cp.ClassId = TypeIdMapper.GetId(attribute.Belong);
-                    }
+                if (cp is null)
+                    insertProperties.Add(new ClassProperty(GuidGenerator.Create(), id,
+                        attribute.Info.Name));
+                else
+                {
+                    deleteProperties.Remove(cp);
+                    updateProperties.Add(cp);
                 }
             }
-
-            CheckAttribute(descriptor.ArchiveProperties);
-            CheckAttribute(descriptor.InitialedProperties);
-            CheckAttribute(descriptor.IgnoredProperties);
 
             await _propertyRepository.DeleteManyAsync(deleteProperties, true);
             await _propertyRepository.UpdateManyAsync(updateProperties, true);
             await _propertyRepository.InsertManyAsync(insertProperties, true);
+        }
+
+        public async Task CreateThisAndBase(Guid id)
+        {
+            while (id != default)
+            {
+                ClassContainer entity =
+                    await _repository.FindAsync(id);
+
+                if (entity is not null)
+                {
+                    await CheckPropertiesAsync(id);
+                }
+                else
+                {
+                     await CreateNewAsync(id);
+                }
+
+                Type type = U.Tm[id];
+                id = U.Tm.TryGetId(type.BaseType);
+            }
         }
 
         public async Task<List<ClassPropertyDto>> GetPropertiesAsync(Guid id)
@@ -104,11 +115,11 @@ namespace Ugf.DataManager.ClassManagement
         private async Task<List<ClassProperty>> GetPropertiesByIdAsync(Guid id)
         {
             List<Guid> findIds = new();
-            Type type = TypeIdMapper.GetType(id);
+            Type type = U.Tm[id];
 
             while (type is not null && type != typeof(object))
             {
-                findIds.Add(TypeIdMapper.GetId(type));
+                findIds.Add(U.Tm[type]);
                 type = type.BaseType;
             }
 
@@ -120,7 +131,7 @@ namespace Ugf.DataManager.ClassManagement
 
         private async Task<ClassContainer> CreateNewAsync(Guid classId)
         {
-            Type type = TypeIdMapper.GetType(classId);
+            Type type = U.Tm[classId];
 
             ClassContainer c = await _repository.InsertAsync(
                 new ClassContainer(classId, type.Name));

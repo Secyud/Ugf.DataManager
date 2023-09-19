@@ -82,7 +82,11 @@ namespace Ugf.DataManager.Blazor.Pages
                         Title = L["Class"],
                         Sortable = true,
                         Data = nameof(SpecificObjectDto.ClassId),
-                        ValueConverter = o => TypeIdMapper.GetType(((SpecificObjectDto)o).ClassId).Name
+                        ValueConverter = o =>
+                        {
+                            Guid classId = ((SpecificObjectDto)o).ClassId;
+                            return classId == default ? string.Empty : U.Tm[classId].Name;
+                        }
                     },
                     new()
                     {
@@ -119,18 +123,16 @@ namespace Ugf.DataManager.Blazor.Pages
         public async Task OpenObjectDataModalAsync(SpecificObjectDto dto)
         {
             EditingEntity = await AppService.GetAsync(dto.Id);
-            Type type = TypeIdMapper.GetType(EditingEntity.ClassId);
+            Type type = U.Tm[EditingEntity.ClassId];
             EditingObject = U.Get(type);
-            PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(type);
-
+            
+            ResourceDescriptor resource = new(EditingEntity.Name)
+            {
+                Data = EditingEntity.Data
+            };
             try
             {
-                ResourceDescriptor.LoadDataFromBytes(
-                    EditingObject, property.ArchiveProperties, EditingEntity.ArchivedData);
-                ResourceDescriptor.LoadDataFromBytes(
-                    EditingObject, property.InitialedProperties, EditingEntity.InitialedData);
-                ResourceDescriptor.LoadDataFromBytes(
-                    EditingObject, property.IgnoredProperties, EditingEntity.IgnoredData);
+                resource.WriteToObject(EditingObject);
             }
             catch (Exception e)
             {
@@ -154,18 +156,10 @@ namespace Ugf.DataManager.Blazor.Pages
 
         private async Task UpdateObjectDataAsync()
         {
-            PropertyDescriptor property = U.Factory.InitializeManager.GetProperty(
-                EditingObject.GetType());
-
-            EditingEntity.ArchivedData = ResourceDescriptor.SaveDataToBytes(
-                EditingObject, property.ArchiveProperties);
-            EditingEntity.InitialedData = ResourceDescriptor.SaveDataToBytes(
-                EditingObject, property.InitialedProperties);
-            EditingEntity.IgnoredData = ResourceDescriptor.SaveDataToBytes(
-                EditingObject, property.IgnoredProperties);
-
+            ResourceDescriptor resource = new(EditingEntity.Name);
+            resource.ReadFromObject(EditingObject);
+            EditingEntity.Data = resource.Data;
             await AppService.UpdateAsync(EditingEntity.Id, EditingEntity);
-
             await CloseObjectDataModalAsync();
         }
     }

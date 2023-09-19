@@ -38,7 +38,7 @@ namespace Ugf.DataManager.Blazor.Pages
                 return;
             }
 
-            await ObjectAppService.GenerateConfigAsync(ClassId, BundleId);
+           // await ObjectAppService.GenerateConfigAsync(ClassId, BundleId);
             await Notify.Success("Config Generate Successfully!");
             await CloseModalAsync();
         }

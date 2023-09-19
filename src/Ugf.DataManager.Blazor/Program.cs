@@ -28,7 +28,7 @@ namespace Ugf.DataManager.Blazor
                 .CreateLogger();
 
             UgfApplicationFactory factory = new();
-            factory.Create(null,typeof(InfinityWorldChessDomainModule));
+            factory.Create(null,typeof(InfinityWorldChessModule));
             try
             {
                 Log.Information("Starting web host.");

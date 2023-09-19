@@ -56,6 +56,7 @@ namespace Ugf.DataManager.EntityFrameworkCore
         public DbSet<ClassContainer> ClassContainers { get; set; }
         public DbSet<SpecificObject> SpecificObjects { get; set; }
         public DbSet<ClassProperty> ClassProperties { get; set; }
+        public DbSet<DataConfig> DataConfigs { get; set; }
 
         #endregion
 
@@ -100,6 +101,23 @@ namespace Ugf.DataManager.EntityFrameworkCore
                 b.ConfigureByConvention();
                 b.Property(cs => cs.ClassId).IsRequired();
                 b.HasIndex(u => u.ClassId);
+            });
+            
+            builder.Entity<DataConfig>(b =>
+            {
+                b.ConfigureByConvention();
+                b.Property(cs => cs.Name).IsRequired();
+                b.HasIndex(u => u.Name);
+            });
+            
+            builder.Entity<DataConfigItem>(b =>
+            {
+                b.ConfigureByConvention();
+                b.HasKey(u => new { u.ConfigId, u.ObjectId });
+                b.HasOne<DataConfig>()
+                    .WithMany(p => p.DataConfigItems)
+                    .HasForeignKey(u => u.ConfigId);
+                b.HasIndex( u => new { u.ConfigId, u.ObjectId });
             });
         }
     }

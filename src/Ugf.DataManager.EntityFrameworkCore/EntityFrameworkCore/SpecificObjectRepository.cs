@@ -5,7 +5,7 @@ using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Secyud.Ugf.DataManager;
+using Secyud.Ugf;
 using Ugf.DataManager.ClassManagement;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -48,10 +48,7 @@ namespace Ugf.DataManager.EntityFrameworkCore
 
             if (classId != default)
             {
-                Type type = TypeIdMapper.GetType(classId);
-
-                results = results.Where(
-                    u => TypeIdMapper.GetType(u.ClassId).IsAssignableTo(type));
+                results = results.Where(u => u.ClassId == classId);
             }
 
             return results;

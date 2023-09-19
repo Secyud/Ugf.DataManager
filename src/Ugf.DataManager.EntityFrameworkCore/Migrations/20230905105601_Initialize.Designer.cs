@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Ugf.DataManager.Migrations
 {
     [DbContext(typeof(DataManagerDbContext))]
-    [Migration("20230627085355_Initial")]
-    partial class Initial
+    [Migration("20230905105601_Initialize")]
+    partial class Initialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,17 +94,11 @@ namespace Ugf.DataManager.Migrations
                     b.Property<Guid>("ClassId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte>("DataType")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<short>("PropertyId")
-                        .HasColumnType("smallint");
 
                     b.Property<string>("PropertyName")
                         .HasColumnType("nvarchar(max)");
@@ -120,9 +114,6 @@ namespace Ugf.DataManager.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("ArchivedData")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("BundleId")
                         .HasColumnType("int");
@@ -144,6 +135,9 @@ namespace Ugf.DataManager.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("CreatorId");
 
+                    b.Property<byte[]>("Data")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<Guid?>("DeleterId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("DeleterId");
@@ -155,12 +149,6 @@ namespace Ugf.DataManager.Migrations
                     b.Property<string>("ExtraProperties")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
-
-                    b.Property<byte[]>("IgnoredData")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("InitialedData")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

@@ -9,5 +9,6 @@
         public const string ClassManagement = Class + ".Class";
         public const string ObjectManagement = Class + ".Object";
 
+        public const string Config = Class + ".Config";
     }
 }

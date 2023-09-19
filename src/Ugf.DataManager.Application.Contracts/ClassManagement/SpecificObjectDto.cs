@@ -9,8 +9,6 @@ namespace Ugf.DataManager.ClassManagement
         public Guid ClassId { get; set; }
         public string Name { get; set; }
         public int BundleId { get; set; }
-        public byte[] ArchivedData { get; set; }
-        public byte[] InitialedData { get; set; }
-        public byte[] IgnoredData { get; set; }
+        public byte[] Data { get; set; }
     }
 }

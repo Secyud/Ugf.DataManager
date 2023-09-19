@@ -10,22 +10,18 @@ namespace Ugf.DataManager.ClassManagement
         }
     
         public SpecificObject(Guid id, 
-            Guid classId, string name, int bundleId, byte[] archivedData, byte[] initialedData, byte[] ignoredData) 
+            Guid classId, string name, int bundleId, byte[] data) 
             : base(id)
         {
             ClassId = classId;
             Name = name;
             BundleId = bundleId;
-            ArchivedData = archivedData;
-            InitialedData = initialedData;
-            IgnoredData = ignoredData;
+            Data = data;
         }
 
         public Guid ClassId { get; set; }
         public string Name { get; set; }
         public int BundleId { get; set; }
-        public byte[] ArchivedData { get; set; }
-        public byte[] InitialedData { get; set; }
-        public byte[] IgnoredData { get; set; }
+        public byte[] Data { get; set; }
     }
 }

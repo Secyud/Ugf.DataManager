@@ -1,10 +1,12 @@
 ﻿@using Secyud.Ugf.DataManager
+@using Secyud.Ugf
 
 <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid"
-              Data="TypeIdMapper.SubTypes(BaseClass)"
+              Data="U.Tm.SubTypes(BaseClass)"
               TextField="u => u.Item1"
               ValueField="u => u.Item2"
-              SelectedValueChanged="v => _selectClassId = v"/>
+              SelectedValueChanged="v => _selectClassId = v"
+              Filter="AutocompleteFilter.Contains"/>
 <Button Clicked="EnsureSelect">Ensure</Button>
 
 @code {

@@ -13,6 +13,10 @@ namespace Ugf.DataManager
             CreateMap<ClassPropertyDto, ClassProperty>();
             CreateMap<ClassContainerDto, ClassContainer>();
             CreateMap<SpecificObjectDto, SpecificObject>();
+            CreateMap<DataConfig, DataConfigDto>();
+            CreateMap<DataConfigItem, DataConfigItemDto>();
+            CreateMap<DataConfigDto, DataConfig>();
+            CreateMap<DataConfigItemDto, DataConfigItem>();
         }
     }
 }
