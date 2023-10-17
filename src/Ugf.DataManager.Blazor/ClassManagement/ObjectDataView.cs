@@ -21,13 +21,18 @@ namespace Ugf.DataManager.Blazor.ClassManagement
         public static async Task<ObjectDataView> CreateAsync(object obj,IClassContainerAppService appService)
         {
             ObjectDataView view = new(obj);
-            PropertyDescriptor descriptor = U.Tm.GetProperty(obj.GetType()).Properties;
-
-            while (descriptor is not null)
+            TypeDescriptor classDesc = U.Tm.GetProperty(obj.GetType());
+            
+            PropertyDescriptor descriptor = classDesc.Properties;
+            Type type = classDesc.Type;
+            
+            
+            while (descriptor is not null && type is not null)
             {
-                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(U.Tm[descriptor.Type]);
+                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(U.Tm[type]);
                 view.AddProperty(descriptor.Attributes, properties);
                 descriptor = descriptor.BaseProperty;
+                type = type.BaseType;
             }
 
             return view;

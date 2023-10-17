@@ -11,11 +11,12 @@ namespace Ugf.DataManager.ClassManagement
         }
 
         public ClassProperty(Guid id, 
-            Guid classId,string propertyName)
+            Guid classId,string propertyName,EditStyle style = EditStyle.Default)
             : base(id)
         {
             ClassId = classId;
             PropertyName = propertyName;
+            Style = style;
         }
 
         public Guid ClassId { get; set; }
@@ -23,5 +24,6 @@ namespace Ugf.DataManager.ClassManagement
         public string Name { get; set; }
 
         public string Description { get; set; }
+        public EditStyle Style { get; set; }
     }
 }

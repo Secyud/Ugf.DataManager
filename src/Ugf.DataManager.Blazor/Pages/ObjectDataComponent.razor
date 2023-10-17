@@ -7,14 +7,13 @@
 {
     @foreach ((ClassPropertyDto property, SAttribute attr)  in _data.Properties)
     {
-        <Field ColumnSize="ColumnSize.Is6">
+        <Field>
             <FieldLabel>
-                <Tooltip Text="@property?.Description"
-                         TriggerTargetId="tooltip-custom-target" Inline>
-                    <Badge Color="Color.Info">
+                <Badge Color="Color.Info">
+                    <Tooltip Text="@property?.Description" TriggerTargetId="tooltip-custom-target" Inline>
                         @((property?.Name).IsNullOrEmpty() ? attr.Info.Name : property?.Name)
-                    </Badge>
-                </Tooltip>
+                    </Tooltip>
+                </Badge>
             </FieldLabel>
             <ObjectViewer Property="property" Attr="attr" Data="_data" Obj="attr.GetValue(Object)"/>
         </Field>

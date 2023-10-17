@@ -1,13 +1,24 @@
 ﻿@using Secyud.Ugf.DataManager
 @using Secyud.Ugf
+<Fields>
 
-<Autocomplete TItem="Tuple<string, Guid>" TValue="Guid"
-              Data="U.Tm.SubTypes(BaseClass)"
-              TextField="u => u.Item1"
-              ValueField="u => u.Item2"
-              SelectedValueChanged="v => _selectClassId = v"
-              Filter="AutocompleteFilter.Contains"/>
-<Button Clicked="EnsureSelect">Ensure</Button>
+    <Field ColumnSize="ColumnSize.Is10">
+        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid"
+                      Placeholder="@Placeholder"
+                      Data="U.Tm.SubTypes(BaseClass)"
+                      TextField="u => u.Item1"
+                      ValueField="u => u.Item2"
+                      SelectedValueChanged="v => _selectClassId = v"
+                      Filter="AutocompleteFilter.Contains">
+        </Autocomplete>
+    </Field>
+    <Field ColumnSize="ColumnSize.Is1">
+        <Button Width="Width.Is25" Color="Color.Secondary">
+            <Icon Width="Width.Is25" Clicked="EnsureSelect"
+                  Name="IconName.Check"/>
+        </Button>
+    </Field>
+</Fields>
 
 @code {
 
@@ -16,6 +27,9 @@
 
     [Parameter]
     public EventCallback<Guid> EnsureAction { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; }
 
     private Guid _selectClassId;
 

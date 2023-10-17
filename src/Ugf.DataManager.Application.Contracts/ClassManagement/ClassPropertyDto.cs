@@ -9,5 +9,6 @@ namespace Ugf.DataManager.ClassManagement
         public string PropertyName { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public EditStyle Style { get; set; }
     }
 }

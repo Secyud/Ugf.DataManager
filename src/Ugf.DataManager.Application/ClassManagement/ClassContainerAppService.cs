@@ -46,6 +46,12 @@ namespace Ugf.DataManager.ClassManagement
             List<ClassProperty> updateProperties = new();
 
             Type type = U.Tm[id];
+            if (type is null)
+            {
+                await DeleteAsync(id);
+                return;
+            }
+
             TypeDescriptor descriptor = U.Tm.GetProperty(type);
             PropertyDescriptor propertyDescriptor = descriptor.Properties;
             foreach (SAttribute attribute in propertyDescriptor.Attributes)
@@ -80,10 +86,15 @@ namespace Ugf.DataManager.ClassManagement
                 }
                 else
                 {
-                     await CreateNewAsync(id);
+                    await CreateNewAsync(id);
                 }
 
                 Type type = U.Tm[id];
+                if (type is null)
+                {
+                    return;
+                }
+
                 id = U.Tm.TryGetId(type.BaseType);
             }
         }

@@ -17,20 +17,16 @@ namespace Ugf.DataManager.Blazor.Pages
     public partial class ObjectViewer
     {
         [Inject] public IClassContainerAppService AppService { get; set; }
-
         [Parameter] public ClassPropertyDto Property { get; set; }
-        [Parameter] public  SAttribute Attr { get; set; }
+        [Parameter] public SAttribute Attr { get; set; }
         [Parameter] public ObjectDataView Data { get; set; }
         [Parameter] public object Obj { get; set; }
-        
 
-        public async Task SetObject(SAttribute attribute, Guid classId)
+        public Task SetObject(SAttribute attribute, Guid classId)
         {
-            attribute.SetValue(Data.Obj,
-                classId == default
-                    ? null
-                    : U.Get(U.Tm[classId]));
-            await InvokeAsync(StateHasChanged);
+            Obj = CreateObject(classId);
+            attribute.SetValue(Data.Obj,Obj);
+            return InvokeAsync(StateHasChanged);
         }
 
         public object CreateObject(Guid classId)

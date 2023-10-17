@@ -1,4 +1,4 @@
-﻿namespace Ugf.DataManager.ClassManager
+﻿namespace Ugf.DataManager.ClassManagement
 {
     public enum EditStyle : byte
     {

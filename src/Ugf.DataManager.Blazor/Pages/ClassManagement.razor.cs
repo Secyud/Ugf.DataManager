@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazorise;
 using Ugf.DataManager.ClassManagement;
 using Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
@@ -96,6 +97,11 @@ namespace Ugf.DataManager.Blazor.Pages
             await AppService.UpdatePropertiesAsync(EditingProperties);
         }
 
+        protected override async Task CreateEntityAsync()
+        {
+            await AppService.CreateThisAndBase(NewEntity.Id);
+        }
+
         private async Task RefreshClassProperty()
         {
             await AppService.CreateThisAndBase(EditingEntity.Id);
@@ -104,9 +110,9 @@ namespace Ugf.DataManager.Blazor.Pages
 
         protected override ValueTask SetToolbarItemsAsync()
         {
-            // Toolbar.AddButton(L["NewClass"],
-            //     OpenCreateModalAsync,
-            //     IconName.Add);
+            Toolbar.AddButton(L["NewClass"],
+                OpenCreateModalAsync,
+                IconName.Add);
 
             return base.SetToolbarItemsAsync();
         }

@@ -1,8 +1,6 @@
 ﻿@using Secyud.Ugf.DataManager
 @using System.Collections
-@using Ugf.DataManager.ClassManager
-
-
+@using Ugf.DataManager.ClassManagement
 
 @switch (Attr.Type)
 {
@@ -15,6 +13,7 @@
                 break;
             case IList {IsFixedSize: true } list:
             {
+                Type baseClass = Attr.Info.FieldType.GetGenericArguments().First();
                 for (int i = 0; i < list.Count; i++)
                 {
                     int index = i;
@@ -22,15 +21,17 @@
                     if (subO is null)
                     {
                         <ClassSelector
-                            BaseClass="list.GetType().GetGenericArguments().First()"
+                            Placeholder="@baseClass.Name" BaseClass="baseClass"
                             EnsureAction="id => list[index] = CreateObject(id)"/>
                     }
                     else
                     {
-                        <Button Clicked="() => list[index] = null">SetNull</Button>
-                        <Badge Color="@Color.Info">
-                            @subO.GetType().Name
-                        </Badge>
+                        <Field>
+                            <Badge Color="@Color.Info"
+                                   CloseClicked="() => list.RemoveAt(index)">
+                                @subO.GetType().Name
+                            </Badge>
+                        </Field>
                         <ObjectDataComponent Object="@subO"/>
                     }
                 }
@@ -38,24 +39,34 @@
             }
             case IList list:
             {
+                Type baseClass = Attr.Info.FieldType.GetGenericArguments().First();
                 for (int i = 0; i < list.Count; i++)
                 {
                     int index = i;
                     object subO = list[index];
+                    <Field>
+                        <Badge Color="@Color.Info"
+                               CloseClicked="() => list.RemoveAt(index)">
+                            @subO?.GetType().Name
+                        </Badge>
+                    </Field>
                     <ObjectDataComponent Object="@subO"/>
-                    <Button Clicked="() => list.RemoveAt(index)">Remove</Button>
                 }
-                <ClassSelector BaseClass="@Attr.Info.FieldType"
-                               EnsureAction="id => list.Add(CreateObject(id))"/>
+
+                <ClassSelector
+                    Placeholder="@baseClass.Name" BaseClass="@baseClass"
+                    EnsureAction="id => list.Add(CreateObject(id))"/>
                 break;
             }
             default:
-                <Button Clicked="() => SetObject(Attr, default)">SetNull</Button>
-                <Tooltip Text="@Property?.Description">
-                    <Badge Color="@Color.Info">
-                        @Obj.GetType().Name
+                <Field>
+                    <Badge Color="@Color.Info"
+                           CloseClicked="() => SetObject(Attr, default)">
+                        <Tooltip Text="@Property?.Description">
+                            @Obj.GetType().Name
+                        </Tooltip>
                     </Badge>
-                </Tooltip>
+                </Field>
                 <ObjectDataComponent Object="@Obj"/>
                 break;
         }
@@ -65,7 +76,7 @@
                CheckedChanged="b => Data.SetValue(Attr, b)"/>
         break;
     case FieldType.UInt8:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="byte" Value="Data.GetValue<byte>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -78,7 +89,7 @@
         }
         break;
     case FieldType.UInt16:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="ushort" Value="Data.GetValue<ushort>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -91,7 +102,7 @@
         }
         break;
     case FieldType.UInt32:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="uint" Value="Data.GetValue<uint>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -104,7 +115,7 @@
         }
         break;
     case FieldType.UInt64:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="ulong" Value="Data.GetValue<ulong>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -117,7 +128,7 @@
         }
         break;
     case FieldType.Int8:
-        @if (Attr.Style == EditStyle.FlagOrMemo)
+        @if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="sbyte" Value="Data.GetValue<sbyte>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -130,7 +141,7 @@
         }
         break;
     case FieldType.Int16:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="short" Value="Data.GetValue<short>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -143,7 +154,7 @@
         }
         break;
     case FieldType.Int32:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="int" Value="Data.GetValue<int>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -156,7 +167,7 @@
         }
         break;
     case FieldType.Int64:
-        if (Attr.Style == EditStyle.FlagOrMemo)
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             <BinaryEdit TValue="long" Value="Data.GetValue<long>(Attr)"
                         ValueChanged="v => Data.SetValue(Attr, v)">
@@ -180,8 +191,8 @@
         <NumericEdit TValue="decimal" Value="Data.GetValue<decimal>(Attr)"
                      ValueChanged="v => Data.SetValue(Attr, v)"/>
         break;
-    case FieldType.String: 
-        if (Attr.Style == EditStyle.FlagOrMemo)
+    case FieldType.String:
+        if (Property?.Style == EditStyle.FlagOrMemo)
         {
             string text = Data.GetValue<string>(Attr);
             <MemoEdit Text="@text"
