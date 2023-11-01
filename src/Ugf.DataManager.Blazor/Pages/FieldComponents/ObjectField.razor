@@ -1,0 +1,120 @@
+﻿@using System.Collections
+@using Secyud.Ugf
+@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.Blazor.ClassManagement
+@using Ugf.DataManager.ClassManagement
+@implements IDataField
+
+@switch (FieldObject)
+{
+    case null:
+    {
+        <FieldContainer Field="this">
+            <ClassSelector
+                BaseClass="@FieldDescriptor.Info.FieldType"
+                EnsureAction="id => SetObject(FieldDescriptor, id)"/>
+        </FieldContainer>
+        break;
+    }
+    case IList {IsFixedSize: true } list:
+    {
+        Type baseClass = FieldDescriptor.Info.FieldType.GetElementType();
+        if (baseClass is null) break;
+
+        <FieldContainer Field="this"/>
+        <Divider/>
+        for (int i = 0; i < list.Count; i++)
+        {
+            int index = i;
+            object subO = list[i];
+            if (subO is null)
+            {
+                <Field ColumnSize="ColumnSize.IsFull">
+                    <ClassSelector Placeholder="@baseClass.Name" BaseClass="baseClass"
+                                   EnsureAction="id => list[index] = CreateObject(id)"/>
+                </Field>
+            }
+            else
+            {
+                <ObjectViewer ViewObject="@subO"
+                              CloseClicked="() => list[index] = default"
+                              Prefix="@($"{FieldDescriptor.Info.Name}[{index}]")"/>
+            }
+        }
+        <Divider/>
+        break;
+    }
+    case IList list:
+    {
+        Type baseClass = FieldDescriptor.Info.FieldType.GetGenericArguments().First();
+
+        <FieldContainer Field="this">
+            <ClassSelector
+                Placeholder="@baseClass.Name" BaseClass="@baseClass"
+                EnsureAction="id => list.Add(CreateObject(id))"/>
+        </FieldContainer>
+        <Divider/>
+        for (int i = 0; i < list.Count; i++)
+        {
+            int index = i;
+            object subO = list[index];
+            <ObjectViewer ViewObject="@subO"
+                          CloseClicked="() => list.RemoveAt(index)"
+                          Prefix="@($"{FieldDescriptor.Info.Name}[{index}]")"/>
+        }
+        <Divider/>
+        break;
+    }
+    default:
+    {
+        <FieldContainer Field="this"/>
+
+        if (FieldDescriptor.Info.IsInitOnly)
+        {
+            <ObjectViewer ViewObject="@FieldObject"/>
+        }
+        else
+        {
+            <ObjectViewer ViewObject="@FieldObject"
+                          CloseClicked="() => SetObject(FieldDescriptor, default)"/>
+        }
+
+
+        break;
+    }
+}
+
+@code{
+
+    [Parameter]
+    public SAttribute FieldDescriptor { get; set; }
+
+    [Parameter]
+    public ClassPropertyDto FieldTypeMessage { get; set; }
+
+    [Parameter]
+    public ObjectDataView ParentObjectData { get; set; }
+
+    private object FieldObject { get; set; }
+
+    public IFluentColumn FieldSize => ColumnSize.IsFull;
+
+    protected override Task OnInitializedAsync()
+    {
+        FieldObject = ParentObjectData.GetValue<object>(FieldDescriptor);
+        return base.OnInitializedAsync();
+    }
+
+    public Task SetObject(SAttribute attribute, Guid classId)
+    {
+        FieldObject = CreateObject(classId);
+        attribute.SetValue(ParentObjectData.Obj, FieldObject);
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public object CreateObject(Guid classId)
+    {
+        return classId == default ? null : U.Get(U.Tm[classId]);
+    }
+}
+

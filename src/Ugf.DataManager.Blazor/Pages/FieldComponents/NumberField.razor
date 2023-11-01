@@ -1,0 +1,29 @@
+﻿@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.Blazor.ClassManagement
+@using Ugf.DataManager.ClassManagement
+@typeparam TValue where TValue : struct     
+@implements IDataField
+<FieldContainer Field="this">
+    <NumericEdit TValue="TValue" @bind-Value="@Value"/>
+</FieldContainer>
+
+@code{
+
+    [Parameter]
+    public SAttribute FieldDescriptor { get; set; }
+
+    [Parameter]
+    public ClassPropertyDto FieldTypeMessage { get; set; }
+
+    [Parameter]
+    public ObjectDataView ParentObjectData { get; set; }
+
+    public IFluentColumn FieldSize => ColumnSize.IsAuto;
+
+    private TValue Value
+    {
+        get => ParentObjectData.GetValue<TValue>(FieldDescriptor);
+        set => ParentObjectData.SetValue(FieldDescriptor, value);
+    }
+
+}

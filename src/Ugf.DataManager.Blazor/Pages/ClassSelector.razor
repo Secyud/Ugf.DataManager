@@ -1,24 +1,21 @@
 ﻿@using Secyud.Ugf.DataManager
 @using Secyud.Ugf
-<Fields>
+<div class="container">
+    <Autocomplete Style="width: 100%"
+                  TItem="Tuple<string, Guid>" TValue="Guid"
+                  Class="class-selector-auto-complete"
+                  Placeholder="@Placeholder"
+                  Data="U.Tm.SubTypes(BaseClass)"
+                  TextField="u => u.Item1"
+                  ValueField="u => u.Item2"
+                  SelectedValueChanged="v => SelectClassId = v"
+                  Filter="AutocompleteFilter.Contains"/>
 
-    <Field ColumnSize="ColumnSize.Is10">
-        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid"
-                      Placeholder="@Placeholder"
-                      Data="U.Tm.SubTypes(BaseClass)"
-                      TextField="u => u.Item1"
-                      ValueField="u => u.Item2"
-                      SelectedValueChanged="v => _selectClassId = v"
-                      Filter="AutocompleteFilter.Contains">
-        </Autocomplete>
-    </Field>
-    <Field ColumnSize="ColumnSize.Is1">
-        <Button Width="Width.Is25" Color="Color.Secondary">
-            <Icon Width="Width.Is25" Clicked="EnsureSelect"
-                  Name="IconName.Check"/>
-        </Button>
-    </Field>
-</Fields>
+    <Button Class="class-selector-ensure-button"
+            Color="Color.Secondary" Clicked="EnsureSelect">
+        <Icon Name="IconName.Check"/>
+    </Button>
+</div>
 
 @code {
 
@@ -31,11 +28,11 @@
     [Parameter]
     public string Placeholder { get; set; }
 
-    private Guid _selectClassId;
+    private Guid SelectClassId { get; set; }
 
     private async Task EnsureSelect()
     {
-        await EnsureAction.InvokeAsync(_selectClassId);
+        await EnsureAction.InvokeAsync(SelectClassId);
     }
 
 }

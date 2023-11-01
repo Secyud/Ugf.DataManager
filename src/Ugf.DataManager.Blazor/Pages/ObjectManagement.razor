@@ -1,9 +1,11 @@
 ﻿@page "/object"
 
 @using Ugf.DataManager.ClassManagement
+@using Ugf.DataManager.Blazor.Pages.FieldComponents
 @using Secyud.Ugf
 @inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
+
 <Card>
     <CardHeader>
         @* ************************* PAGE HEADER ************************* *@
@@ -156,8 +158,7 @@
                             <FieldLabel>@L["Bundle"]</FieldLabel>
                             <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
                         </Field>
-
-                        <ObjectDataComponent Object="EditingObject"/>
+                        <ObjectViewer ViewObject="EditingObject"/>
                     </Fields>
                 }
             </ModalBody>

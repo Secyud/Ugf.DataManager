@@ -1,0 +1,38 @@
+﻿@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.Blazor.ClassManagement
+@using Ugf.DataManager.ClassManagement
+@implements IDataField
+
+<FieldContainer Field="this">
+    @if (FieldTypeMessage?.Style == EditStyle.FlagOrMemo)
+    {
+        <MemoEdit @bind-Text="@Value"/>
+    }
+    else
+    {
+        <TextEdit @bind-Text="@Value"/>
+    }
+</FieldContainer>
+
+@code{
+
+    [Parameter]
+    public SAttribute FieldDescriptor { get; set; }
+
+    [Parameter]
+    public ClassPropertyDto FieldTypeMessage { get; set; }
+
+    [Parameter]
+    public ObjectDataView ParentObjectData { get; set; }
+
+    public IFluentColumn FieldSize =>
+        FieldTypeMessage?.Style == EditStyle.FlagOrMemo
+            ? ColumnSize.IsFull : ColumnSize.IsHalf;
+
+    private string Value
+    {
+        get => ParentObjectData.GetValue<string>(FieldDescriptor);
+        set => ParentObjectData.SetValue(FieldDescriptor, value);
+    }
+
+}

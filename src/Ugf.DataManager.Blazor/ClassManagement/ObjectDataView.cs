@@ -12,16 +12,22 @@ namespace Ugf.DataManager.Blazor.ClassManagement
     {
         public List<Tuple<ClassPropertyDto, SAttribute>> Properties { get; } = new();
         public object Obj { get; }
+        public ClassContainerDto ClassContainerDto { get; }
+        public Type Type { get; }
 
-        private ObjectDataView(object obj)
+        private ObjectDataView(object obj, ClassContainerDto classContainerDto)
         {
             Obj = obj;
+            Type = obj.GetType();
+            ClassContainerDto = classContainerDto;
         }
 
         public static async Task<ObjectDataView> CreateAsync(object obj,IClassContainerAppService appService)
         {
-            ObjectDataView view = new(obj);
-            TypeDescriptor classDesc = U.Tm.GetProperty(obj.GetType());
+            Type objectType = obj.GetType();
+            ClassContainerDto classContainer = await appService.GetAsync(U.Tm[objectType]);
+            ObjectDataView view = new(obj,classContainer);
+            TypeDescriptor classDesc = U.Tm.GetProperty(objectType);
             
             PropertyDescriptor descriptor = classDesc.Properties;
             Type type = classDesc.Type;

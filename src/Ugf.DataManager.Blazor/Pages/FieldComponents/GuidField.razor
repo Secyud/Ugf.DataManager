@@ -1,0 +1,38 @@
+﻿@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.Blazor.ClassManagement
+@using Ugf.DataManager.ClassManagement
+@using Ugf.DataManager.Blazor.Pages.EditComponents
+@implements IDataField
+<FieldContainer Field="this">
+    @if (FieldTypeMessage?.Style == EditStyle.FlagOrMemo)
+    {
+        <GuidEdit @bind-Value="@Value"/>
+    }
+    else
+    {
+        <ClassSelector BaseClass="typeof(object)"
+                       EnsureAction="id => Value = id"/>
+        @(Value)
+    }
+</FieldContainer>
+
+@code{
+
+    [Parameter]
+    public SAttribute FieldDescriptor { get; set; }
+
+    [Parameter]
+    public ClassPropertyDto FieldTypeMessage { get; set; }
+
+    [Parameter]
+    public ObjectDataView ParentObjectData { get; set; }
+
+    public IFluentColumn FieldSize => ColumnSize.IsAuto;
+
+    private Guid Value
+    {
+        get => ParentObjectData.GetValue<Guid>(FieldDescriptor);
+        set => ParentObjectData.SetValue(FieldDescriptor, value);
+    }
+
+}

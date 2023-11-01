@@ -1,0 +1,28 @@
+﻿@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.Blazor.ClassManagement
+@using Ugf.DataManager.ClassManagement
+@implements IDataField
+
+<FieldContainer Field="this">
+    <Check TValue="bool" @bind-Checked="@Value"/>
+</FieldContainer>
+
+@code{
+
+    [Parameter]
+    public SAttribute FieldDescriptor { get; set; }
+
+    [Parameter]
+    public ClassPropertyDto FieldTypeMessage { get; set; }
+
+    [Parameter]
+    public ObjectDataView ParentObjectData { get; set; }
+
+    public IFluentColumn FieldSize => ColumnSize.IsAuto;
+
+    private bool Value
+    {
+        get => ParentObjectData.GetValue<bool>(FieldDescriptor);
+        set => ParentObjectData.SetValue(FieldDescriptor, value);
+    }
+}
