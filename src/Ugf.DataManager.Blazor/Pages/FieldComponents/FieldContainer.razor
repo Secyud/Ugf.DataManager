@@ -2,16 +2,17 @@
     <FieldLabel>
         @($"{Field.FieldDescriptor.Info.Name}({Field.FieldTypeMessage?.Name ?? "*"})")
     </FieldLabel>
+    <FieldBody>
+        @ChildContent
+    </FieldBody>
     @if (Field.FieldTypeMessage is not null)
     {
         <FieldHelp>
             @Field.FieldTypeMessage?.Description
         </FieldHelp>
     }
-    <FieldBody>
-        @ChildContent
-    </FieldBody>
 </Field>
+
 @code {
 
     [Parameter]
@@ -19,4 +20,5 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
 }

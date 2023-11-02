@@ -5,84 +5,113 @@
 @using Ugf.DataManager.ClassManagement
 @implements IDataField
 
-@switch (FieldObject)
-{
-    case null:
-    {
-        <FieldContainer Field="this">
-            <ClassSelector
-                BaseClass="@FieldDescriptor.Info.FieldType"
-                EnsureAction="id => SetObject(FieldDescriptor, id)"/>
-        </FieldContainer>
-        break;
-    }
-    case IList {IsFixedSize: true } list:
-    {
-        Type baseClass = FieldDescriptor.Info.FieldType.GetElementType();
-        if (baseClass is null) break;
-
-        <FieldContainer Field="this"/>
-        <Divider/>
-        for (int i = 0; i < list.Count; i++)
-        {
-            int index = i;
-            object subO = list[i];
-            if (subO is null)
+<Accordion>
+    <Collapse Visible="true">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>
+                    <Tooltip Text="@FieldTypeMessage?.Description">
+                        @($"{FieldDescriptor.Info.Name}({FieldTypeMessage?.Name ?? "*"})({FieldObject?.GetType().Name??"null"})")
+                    </Tooltip>
+                </AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            @switch (FieldObject)
             {
-                <Field ColumnSize="ColumnSize.IsFull">
-                    <ClassSelector Placeholder="@baseClass.Name" BaseClass="baseClass"
-                                   EnsureAction="id => list[index] = CreateObject(id)"/>
-                </Field>
+                case null:
+                {
+                    <ClassSelector
+                        BaseClass="@FieldDescriptor.Info.FieldType"
+                        EnsureAction="id => SetObject(FieldDescriptor, id)"/>
+                    break;
+                }
+                case IList {IsFixedSize: true } list:
+                {
+                    Type baseClass = FieldDescriptor.Info.FieldType.GetElementType();
+                    if (baseClass is null) break;
+
+                    <Divider/>
+                    <Accordion>
+                        @for (int i = 0; i < list.Count; i++)
+                        {
+                            int index = i;
+                            object subO = list[i];
+
+                            <Collapse Visible="true">
+                                <CollapseHeader>
+                                    <Heading>
+                                        <AccordionToggle>
+                                            @($"{FieldDescriptor.Info.Name}[{index}] ({subO?.GetType().Name})")
+                                        </AccordionToggle>
+                                    </Heading>
+                                </CollapseHeader>
+                                <CollapseBody>
+                                    @if (subO is null)
+                                    {
+                                        <ClassSelector Placeholder="@baseClass.Name" BaseClass="baseClass"
+                                                       EnsureAction="id => list[index] = CreateObject(id)"/>
+                                    }
+                                    else
+                                    {
+                                        <ObjectViewer ViewObject="@subO"
+                                                      CloseClicked="() => list[index] = default"/>
+                                    }
+                                </CollapseBody>
+                            </Collapse>
+                        }
+                    </Accordion>
+                    <Divider/>
+                    break;
+                }
+                case IList list:
+                {
+                    Type baseClass = FieldDescriptor.Info.FieldType.GetGenericArguments().First();
+
+                    <ClassSelector
+                        Placeholder="@baseClass.Name" BaseClass="@baseClass"
+                        EnsureAction="id => list.Add(CreateObject(id))"/>
+                    <Divider/>
+                    <Accordion>
+                        @for (int i = 0; i < list.Count; i++)
+                        {
+                            int index = i;
+                            object subO = list[index];
+                            <Collapse Visible="true">
+                                <CollapseHeader>
+                                    <Heading>
+                                        <AccordionToggle>
+                                            @($"{FieldDescriptor.Info.Name}[{index}] ({subO?.GetType().Name})")
+                                        </AccordionToggle>
+                                    </Heading>
+                                </CollapseHeader>
+                                <CollapseBody>
+                                    <ObjectViewer ViewObject="@subO"
+                                                  CloseClicked="() => list.RemoveAt(index)"/>
+                                </CollapseBody>
+                            </Collapse>
+                        }
+                    </Accordion>
+                    <Divider/>
+                    break;
+                }
+                default:
+                {
+                    @if (FieldDescriptor.Info.IsInitOnly)
+                    {
+                        <ObjectViewer ViewObject="@FieldObject"/>
+                    }
+                    else
+                    {
+                        <ObjectViewer ViewObject="@FieldObject"
+                                      CloseClicked="() => SetObject(FieldDescriptor, default)"/>
+                    }
+                    break;
+                }
             }
-            else
-            {
-                <ObjectViewer ViewObject="@subO"
-                              CloseClicked="() => list[index] = default"
-                              Prefix="@($"{FieldDescriptor.Info.Name}[{index}]")"/>
-            }
-        }
-        <Divider/>
-        break;
-    }
-    case IList list:
-    {
-        Type baseClass = FieldDescriptor.Info.FieldType.GetGenericArguments().First();
-
-        <FieldContainer Field="this">
-            <ClassSelector
-                Placeholder="@baseClass.Name" BaseClass="@baseClass"
-                EnsureAction="id => list.Add(CreateObject(id))"/>
-        </FieldContainer>
-        <Divider/>
-        for (int i = 0; i < list.Count; i++)
-        {
-            int index = i;
-            object subO = list[index];
-            <ObjectViewer ViewObject="@subO"
-                          CloseClicked="() => list.RemoveAt(index)"
-                          Prefix="@($"{FieldDescriptor.Info.Name}[{index}]")"/>
-        }
-        <Divider/>
-        break;
-    }
-    default:
-    {
-        <FieldContainer Field="this"/>
-
-        if (FieldDescriptor.Info.IsInitOnly)
-        {
-            <ObjectViewer ViewObject="@FieldObject"/>
-        }
-        else
-        {
-            <ObjectViewer ViewObject="@FieldObject"
-                          CloseClicked="() => SetObject(FieldDescriptor, default)"/>
-        }
-
-
-        break;
-    }
-}
+        </CollapseBody>
+    </Collapse>
+</Accordion>
 
 @code{
 
@@ -116,5 +145,5 @@
     {
         return classId == default ? null : U.Get(U.Tm[classId]);
     }
-}
 
+}

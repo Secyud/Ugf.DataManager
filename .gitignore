@@ -9,3 +9,4 @@ Logs
 *.csproj
 *.sln.*
 *.csproj.*
+*.Development.json

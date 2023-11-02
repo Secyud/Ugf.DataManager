@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Secyud.Ugf;
 using Secyud.Ugf.Archiving;
@@ -13,11 +14,14 @@ namespace Ugf.DataManager.ClassManagement
     public class ObjectManager : DomainService
     {
         private readonly ISpecificObjectRepository _objectRepository;
+        private readonly IConfiguration _configuration;
 
         public ObjectManager(
-            ISpecificObjectRepository objectRepository)
+            ISpecificObjectRepository objectRepository,
+            IConfiguration configuration)
         {
             _objectRepository = objectRepository;
+            _configuration = configuration;
         }
 
         public async Task GenerateConfigAsync(List<Guid> objectIds,string configName)
@@ -29,7 +33,7 @@ namespace Ugf.DataManager.ClassManagement
                 .Where(u => objectIds.Contains(u.Id))
                 .ToList();
 
-            string path = Path.Combine(AppContext.BaseDirectory, "OutConfigs");
+            string path = Path.Combine(_configuration["ConfigPath"] ?? AppContext.BaseDirectory, "OutConfigs");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
