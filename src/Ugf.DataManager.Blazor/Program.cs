@@ -1,10 +1,12 @@
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
-using InfinityWorldChess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Secyud.Ugf;
 using Secyud.Ugf.Modularity;
+using Secyud.Ugf.Modularity.Plugins;
 using Serilog;
 using Serilog.Events;
 
@@ -12,7 +14,7 @@ namespace Ugf.DataManager.Blazor
 {
     public class Program
     {
-        public async static Task<int> Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
@@ -27,8 +29,23 @@ namespace Ugf.DataManager.Blazor
                 .WriteTo.Async(c => c.Console())
                 .CreateLogger();
 
+            // foreach (var file in Directory.GetFiles(@"D:\Projects\infinity-world-chess\obj\Debug"))
+            // {
+            //     if (file.EndsWith(".dll"))
+            //     {
+            //         Assembly.LoadFrom(file);
+            //     }
+            // }
+
+            U.DataManager = true;
             UgfApplicationFactory factory = new();
-            factory.Create(null,typeof(InfinityWorldChessModule));
+            Assembly assembly = Assembly.LoadFrom(@"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\InfinityWorldChess.dll");
+            var type = assembly.GetType("InfinityWorldChess.InfinityWorldChessModule");
+            factory.Create(null, type,new PlugInSourceList()
+            {
+                new FilePluginSource(
+                    @"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\BasicPackage.dll")
+            });
             try
             {
                 Log.Information("Starting web host.");

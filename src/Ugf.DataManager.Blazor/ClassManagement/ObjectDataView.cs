@@ -40,6 +40,9 @@ namespace Ugf.DataManager.Blazor.ClassManagement
                 descriptor = descriptor.BaseProperty;
                 type = type.BaseType;
             }
+            view.Properties.Sort(
+                (u,v)=>
+                    u.Item2.Id - v.Item2.Id);
 
             return view;
         }

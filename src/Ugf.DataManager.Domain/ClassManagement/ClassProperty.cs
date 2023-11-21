@@ -1,5 +1,4 @@
 ﻿using System;
-using Secyud.Ugf.DataManager;
 using Volo.Abp.Domain.Entities;
 
 namespace Ugf.DataManager.ClassManagement

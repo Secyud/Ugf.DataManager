@@ -3,7 +3,6 @@
 <div class="container">
     <Autocomplete Style="width: 100%"
                   TItem="Tuple<string, Guid>" TValue="Guid"
-                  Class="class-selector-auto-complete"
                   Placeholder="@Placeholder"
                   Data="U.Tm.SubTypes(BaseClass)"
                   TextField="u => u.Item1"
@@ -11,10 +10,19 @@
                   SelectedValueChanged="v => SelectClassId = v"
                   Filter="AutocompleteFilter.Contains"/>
 
-    <Button Class="class-selector-ensure-button"
-            Color="Color.Secondary" Clicked="EnsureSelect">
-        <Icon Name="IconName.Check"/>
-    </Button>
+    @if (EnsureAction.HasDelegate)
+    {
+        <Button Color="Color.Secondary" Clicked="EnsureSelect">
+            <Icon Name="IconName.Check"/>
+        </Button>
+    }
+    
+    @if (CancelAction.HasDelegate)
+    {
+        <Button Color="Color.Danger" Clicked="CancelAction">
+            <Icon Name="IconName.Delete"/>
+        </Button>
+    }
 </div>
 
 @code {
@@ -24,6 +32,9 @@
 
     [Parameter]
     public EventCallback<Guid> EnsureAction { get; set; }
+    
+    [Parameter]
+    public EventCallback CancelAction { get; set; }
 
     [Parameter]
     public string Placeholder { get; set; }

@@ -1,7 +1,6 @@
 ﻿@page "/class"
 
 @using Ugf.DataManager.ClassManagement
-@using Secyud.Ugf.DataManager
 @using Secyud.Ugf
 @inherits AbpCrudPageBase<IClassContainerAppService, ClassContainerDto, Guid, GetClassListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
@@ -28,7 +27,7 @@
                         <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
                     </Addon>
                     <Addon AddonType="AddonType.End">
-                        <Button Clicked="GetEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
+                        <Button Clicked="SearchEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
                     </Addon>
                 </Addons>
             </Field>

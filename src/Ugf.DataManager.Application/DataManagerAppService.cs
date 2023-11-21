@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Ugf.DataManager.Localization;
+﻿using Ugf.DataManager.Localization;
 using Volo.Abp.Application.Services;
 
 namespace Ugf.DataManager

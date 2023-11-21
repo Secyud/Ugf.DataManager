@@ -2,6 +2,7 @@
 @using Ugf.DataManager.Blazor.ClassManagement
 @using Ugf.DataManager.ClassManagement
 @using Ugf.DataManager.Blazor.Pages.EditComponents
+@using Castle.Core.Internal
 @implements IDataField
 <FieldContainer Field="this">
     @if (FieldTypeMessage?.Style == EditStyle.FlagOrMemo)
@@ -10,7 +11,7 @@
     }
     else
     {
-        <ClassSelector BaseClass="typeof(object)"
+        <ClassSelector BaseClass="GetLimitType()"
                        EnsureAction="id => Value = id"/>
         @(Value)
     }
@@ -35,4 +36,9 @@
         set => ParentObjectData.SetValue(FieldDescriptor, value);
     }
 
+    public Type GetLimitType()
+    {
+        TypeLimitAttribute limit = FieldDescriptor.Info.GetAttribute<TypeLimitAttribute>();
+        return limit?.LimitType;
+    }
 }
