@@ -30,7 +30,7 @@ namespace Ugf.DataManager.ClassManagement
 
             List<SpecificObject> results =
                 (await _objectRepository.GetQueryableAsync())
-                .Where(u => objectIds.Contains(u.Id))
+                .Where(u => objectIds.Contains(u.Id) && !u.IsDeleted)
                 .ToList();
 
             string path = Path.Combine(_configuration["ConfigPath"] ?? AppContext.BaseDirectory, "OutConfigs");
