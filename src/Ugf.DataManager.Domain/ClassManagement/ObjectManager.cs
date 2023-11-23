@@ -5,8 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Secyud.Ugf;
-using Secyud.Ugf.Archiving;
+using Secyud.Ugf.DataManager;
 using Volo.Abp.Domain.Services;
 
 namespace Ugf.DataManager.ClassManagement
@@ -30,7 +29,11 @@ namespace Ugf.DataManager.ClassManagement
 
             List<SpecificObject> results =
                 (await _objectRepository.GetQueryableAsync())
-                .Where(u => objectIds.Contains(u.Id) && !u.IsDeleted)
+                .Where(u => 
+                    objectIds.Contains(u.Id) &&
+                    !u.IsDeleted &&
+                    u.Data != null &&
+                    u.Data.Any())
                 .ToList();
 
             string path = Path.Combine(_configuration["ConfigPath"] ?? AppContext.BaseDirectory, "OutConfigs");
@@ -42,16 +45,16 @@ namespace Ugf.DataManager.ClassManagement
 
             Logger.LogInformation("ClassManager: Start write config to path: {Path}", path);
             await using FileStream stream = File.OpenWrite(path);
-            await using DefaultArchiveWriter writer = new(stream);
+            await using DataWriter writer = new(stream);
 
             writer.Write(results.Count);
 
             foreach (SpecificObject result in results)
             {
-                writer.Write(result.ClassId);
-                writer.Write(result.Name);
-                writer.Write(result.Data.Length);
-                writer.Write(result.Data);
+                writer.SaveResource(result.ClassId,new ResourceDescriptor(result.Name)
+                {
+                    Data = result.Data
+                });
             }
 
             Logger.LogInformation("Config successfully write {Count} objects", results.Count);

@@ -1,5 +1,4 @@
 <Project>
-
     <ItemGroup>
         <Reference Include="Secyud.Ugf">
             <HintPath>D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\Secyud.Ugf.dll</HintPath>
