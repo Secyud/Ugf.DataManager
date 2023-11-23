@@ -1,12 +1,10 @@
-/Outer
+
+.idea
+
 bin
 obj
-.idea
 node_modules
 libs
 Logs
-*.sln
-*.csproj
-*.sln.*
-*.csproj.*
-*.Development.json
+*.DotSettings.user
+appsettings.Development.json
