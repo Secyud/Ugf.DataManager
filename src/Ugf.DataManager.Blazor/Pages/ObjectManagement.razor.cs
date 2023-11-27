@@ -109,6 +109,9 @@ namespace Ugf.DataManager.Blazor.Pages
             Toolbar.AddButton(L["NewObject"],
                 OpenCreateModalAsync,
                 IconName.Add);
+            Toolbar.AddButton(L["CheckObject"],
+                AppService.CheckObjectsValidAsync,
+                IconName.Check);
 
             return base.SetToolbarItemsAsync();
         }
@@ -132,7 +135,7 @@ namespace Ugf.DataManager.Blazor.Pages
             };
             try
             {
-                resource.WriteToObject(EditingObject);
+                resource.LoadObject(EditingObject);
             }
             catch (Exception e)
             {
@@ -157,7 +160,7 @@ namespace Ugf.DataManager.Blazor.Pages
         private async Task UpdateObjectDataAsync()
         {
             ResourceDescriptor resource = new(EditingEntity.Name);
-            resource.ReadFromObject(EditingObject);
+            resource.SaveObject(EditingObject);
             EditingEntity.Data = resource.Data;
             await AppService.UpdateAsync(EditingEntity.Id, EditingEntity);
             await CloseObjectDataModalAsync();

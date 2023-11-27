@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Secyud.Ugf.DataManager;
+using Secyud.Ugf;
 using Volo.Abp.Domain.Services;
 
 namespace Ugf.DataManager.ClassManagement
@@ -23,13 +24,37 @@ namespace Ugf.DataManager.ClassManagement
             _configuration = configuration;
         }
 
-        public async Task GenerateConfigAsync(List<Guid> objectIds,string configName)
+        public async Task CheckObjectsValidAsync()
+        {
+            IQueryable<SpecificObject> objects = await _objectRepository.GetQueryableAsync();
+            foreach (SpecificObject o in objects)
+            {
+                try
+                {
+                    Type type = U.Tm[o.ClassId];
+                    var obj = U.Get(type);
+
+                    ResourceDescriptor resource = new(o.Name)
+                    {
+                        Data = o.Data
+                    };
+                    resource.LoadObject(obj);
+                }
+                catch (Exception e)
+                {
+                    await Console.Error.WriteAsync($"Id: {o.ClassId}, Name: {o.Name}");
+                    Console.Error.Write(e);
+                }
+            }
+        }
+
+        public async Task GenerateConfigAsync(List<Guid> objectIds, string configName)
         {
             Logger.LogInformation("ClassManager: Begin search object");
 
             List<SpecificObject> results =
                 (await _objectRepository.GetQueryableAsync())
-                .Where(u => 
+                .Where(u =>
                     objectIds.Contains(u.Id) &&
                     !u.IsDeleted &&
                     u.Data != null &&
@@ -40,7 +65,7 @@ namespace Ugf.DataManager.ClassManagement
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-        
+
             path = Path.Combine(path, $"{configName}.binary");
 
             Logger.LogInformation("ClassManager: Start write config to path: {Path}", path);
@@ -51,7 +76,7 @@ namespace Ugf.DataManager.ClassManagement
 
             foreach (SpecificObject result in results)
             {
-                writer.SaveResource(result.ClassId,new ResourceDescriptor(result.Name)
+                writer.SaveResource(result.ClassId, new ResourceDescriptor(result.Name)
                 {
                     Data = result.Data
                 });
