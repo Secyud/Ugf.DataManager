@@ -1,4 +1,5 @@
 ﻿@using Secyud.Ugf
+@using Secyud.Ugf.DataManager
 @using Ugf.DataManager.ClassManagement
 @using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns
 @using Volo.Abp.Guids
@@ -8,8 +9,8 @@
 
 <Fields>
     <Field ColumnSize="ColumnSize.Is12">
-        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                      TextField="u => u.Item1" ValueField="u => u.Item2"
+        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                      TextField="u => u.Type.Name" ValueField="u => u.Id"
                       @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
 
     </Field>

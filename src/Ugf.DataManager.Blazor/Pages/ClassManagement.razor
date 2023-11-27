@@ -2,6 +2,7 @@
 
 @using Ugf.DataManager.ClassManagement
 @using Secyud.Ugf
+@using Secyud.Ugf.DataManager
 @inherits AbpCrudPageBase<IClassContainerAppService, ClassContainerDto, Guid, GetClassListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 
@@ -16,8 +17,8 @@
     <CardBody>
         <Fields>
             <Field ColumnSize="ColumnSize.Is6">
-                <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                              TextField="u => u.Item1" ValueField="u => u.Item2"
+                <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                              TextField="u => u.Type.Name" ValueField="u => u.Id"
                               @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
 
             </Field>
@@ -116,8 +117,8 @@
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field ColumnSize="ColumnSize.Is6">
-                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                                      TextField="u => u.Item1" ValueField="u => u.Item2"
+                        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                                      TextField="u => u.Type.Name" ValueField="u => u.Id"
                                       @bind-SelectedValue="@NewEntity.Id" Placeholder="@L["Class"]"/>
                     </Field>
                 </Validations>

@@ -86,7 +86,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         ValueConverter = o =>
                         {
                             Guid classId = ((SpecificObjectDto)o).ClassId;
-                            return classId == default ? string.Empty : U.Tm[classId].Name;
+                            return U.Tm[classId]?.Type.Name;
                         }
                     },
                     new()

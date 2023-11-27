@@ -3,6 +3,7 @@
 @using Ugf.DataManager.ClassManagement
 @using Ugf.DataManager.Blazor.Pages.FieldComponents
 @using Secyud.Ugf
+@using Secyud.Ugf.DataManager
 @inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 
@@ -17,8 +18,8 @@
     <CardBody>
         <Fields>
             <Field ColumnSize="ColumnSize.Is12">
-                <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                              TextField="u => u.Item1" ValueField="u => u.Item2"
+                <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                              TextField="u => u.Type.Name" ValueField="u => u.Id"
                               @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
 
             </Field>
@@ -60,8 +61,8 @@
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                                      TextField="u => u.Item1" ValueField="u => u.Item2"
+                        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                                      TextField="u => u.Type.Name" ValueField="u => u.Id"
                                       @bind-SelectedValue="@NewEntity.ClassId"/>
 
                     </Field>
@@ -100,8 +101,8 @@
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                                      TextField="u => u.Item1" ValueField="u => u.Item2"
+                        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
+                                      TextField="u => u.Type.Name" ValueField="u => u.Id"
                                       @bind-SelectedValue="@EditingEntity.ClassId"/>
 
                     </Field>
