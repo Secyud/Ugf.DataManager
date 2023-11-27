@@ -31,9 +31,9 @@ namespace Ugf.DataManager.ClassManagement
         {
             return _objectManager.GenerateConfigAsync(ids, name);
         }
-        public Task CheckObjectsValidAsync()
+        public Task CheckObjectsValidAsync(int bundle,bool update)
         {
-            return _objectManager.CheckObjectsValidAsync();
+            return _objectManager.CheckObjectsValidAsync(bundle,update);
         }
     }
 }

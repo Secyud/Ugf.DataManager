@@ -8,7 +8,7 @@
 
 <Fields>
     <Field ColumnSize="ColumnSize.Is12">
-        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.SubTypes()"
+        <Autocomplete TItem="Tuple<string, Guid>" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
                       TextField="u => u.Item1" ValueField="u => u.Item2"
                       @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
 

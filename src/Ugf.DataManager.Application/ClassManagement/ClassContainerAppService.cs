@@ -45,14 +45,13 @@ namespace Ugf.DataManager.ClassManagement
             List<ClassProperty> insertProperties = new();
             List<ClassProperty> updateProperties = new();
 
-            Type type = U.Tm[id];
-            if (type is null)
+            TypeDescriptor descriptor = U.Tm[id];
+            if (descriptor is null)
             {
                 await DeleteAsync(id);
                 return;
             }
 
-            TypeDescriptor descriptor = U.Tm.GetProperty(type);
             PropertyDescriptor propertyDescriptor = descriptor.Properties;
             foreach (SAttribute attribute in propertyDescriptor.Attributes)
             {
@@ -75,7 +74,8 @@ namespace Ugf.DataManager.ClassManagement
 
         public async Task CreateThisAndBase(Guid id)
         {
-            while (id != default)
+            TypeDescriptor descriptor = U.Tm[id];
+            while (descriptor is not null)
             {
                 ClassContainer entity =
                     await _repository.FindAsync(id);
@@ -89,13 +89,7 @@ namespace Ugf.DataManager.ClassManagement
                     await CreateNewAsync(id);
                 }
 
-                Type type = U.Tm[id];
-                if (type is null)
-                {
-                    return;
-                }
-
-                id = U.Tm.TryGetId(type.BaseType);
+                descriptor = U.Tm.TryGet(descriptor.Type.BaseType);
             }
         }
 
@@ -126,12 +120,12 @@ namespace Ugf.DataManager.ClassManagement
         private async Task<List<ClassProperty>> GetPropertiesByIdAsync(Guid id)
         {
             List<Guid> findIds = new();
-            Type type = U.Tm[id];
+            TypeDescriptor descriptor = U.Tm[id];
 
-            while (type is not null && type != typeof(object))
+            while (descriptor is not null)
             {
-                findIds.Add(U.Tm[type]);
-                type = type.BaseType;
+                findIds.Add(descriptor.Id);
+                descriptor = U.Tm.TryGet(descriptor.Type.BaseType);
             }
 
             return
@@ -142,10 +136,10 @@ namespace Ugf.DataManager.ClassManagement
 
         private async Task<ClassContainer> CreateNewAsync(Guid classId)
         {
-            Type type = U.Tm[classId];
+            TypeDescriptor descriptor = U.Tm[classId];
 
             ClassContainer c = await _repository.InsertAsync(
-                new ClassContainer(classId, type.Name));
+                new ClassContainer(classId, descriptor.Type.Name));
 
             await CheckPropertiesAsync(classId);
 

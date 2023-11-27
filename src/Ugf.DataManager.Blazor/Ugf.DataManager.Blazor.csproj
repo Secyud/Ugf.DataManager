@@ -37,4 +37,20 @@
         <PackageReference Include="Volo.Abp.TenantManagement.Blazor.Server" Version="7.2.2"/>
         <PackageReference Include="Volo.Abp.SettingManagement.Blazor.Server" Version="7.2.2"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Logs\**" />
+    </ItemGroup>
 </Project>

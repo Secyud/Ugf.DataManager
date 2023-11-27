@@ -9,6 +9,6 @@ namespace Ugf.DataManager.ClassManagement
         ICrudAppService<SpecificObjectDto, Guid, GetObjectListInput>
     {
         Task GenerateConfigAsync(List<Guid> ids, string name);
-        Task CheckObjectsValidAsync();
+        Task CheckObjectsValidAsync(int bundle, bool update);
     }
 }

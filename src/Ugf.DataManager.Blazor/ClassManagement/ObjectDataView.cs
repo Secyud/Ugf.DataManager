@@ -25,9 +25,9 @@ namespace Ugf.DataManager.Blazor.ClassManagement
         public static async Task<ObjectDataView> CreateAsync(object obj,IClassContainerAppService appService)
         {
             Type objectType = obj.GetType();
-            ClassContainerDto classContainer = await appService.GetAsync(U.Tm[objectType]);
+            ClassContainerDto classContainer = await appService.GetAsync(U.Tm[objectType].Id);
             ObjectDataView view = new(obj,classContainer);
-            TypeDescriptor classDesc = U.Tm.GetProperty(objectType);
+            TypeDescriptor classDesc = U.Tm[objectType];
             
             PropertyDescriptor descriptor = classDesc.Properties;
             Type type = classDesc.Type;
@@ -35,7 +35,7 @@ namespace Ugf.DataManager.Blazor.ClassManagement
             
             while (descriptor is not null && type is not null)
             {
-                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(U.Tm[type]);
+                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(U.Tm[type].Id);
                 view.AddProperty(descriptor.Attributes, properties);
                 descriptor = descriptor.BaseProperty;
                 type = type.BaseType;

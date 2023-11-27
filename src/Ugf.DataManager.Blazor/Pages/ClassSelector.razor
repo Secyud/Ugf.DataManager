@@ -4,7 +4,7 @@
     <Autocomplete Style="width: 100%"
                   TItem="Tuple<string, Guid>" TValue="Guid"
                   Placeholder="@Placeholder"
-                  Data="U.Tm.SubTypes(BaseClass)"
+                  Data="U.Tm.GetChildrenOfBaseType(BaseClass)"
                   TextField="u => u.Item1"
                   ValueField="u => u.Item2"
                   SelectedValueChanged="v => SelectClassId = v"

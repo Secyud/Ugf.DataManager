@@ -24,17 +24,23 @@ namespace Ugf.DataManager.ClassManagement
             _configuration = configuration;
         }
 
-        public async Task CheckObjectsValidAsync()
+        public async Task CheckObjectsValidAsync(int bundle, bool restore = false)
         {
             IQueryable<SpecificObject> objects = await _objectRepository.GetQueryableAsync();
             foreach (SpecificObject o in objects)
             {
+                if (o.BundleId != bundle)
+                {
+                    continue;
+                }
+                
+                ResourceDescriptor resource = null;
+                object obj = null;
                 try
                 {
-                    Type type = U.Tm[o.ClassId];
-                    var obj = U.Get(type);
-
-                    ResourceDescriptor resource = new(o.Name)
+                    TypeDescriptor descriptor = U.Tm[o.ClassId];
+                    obj = U.Get(descriptor.Type);
+                    resource = new ResourceDescriptor(o.Name)
                     {
                         Data = o.Data
                     };
@@ -42,7 +48,21 @@ namespace Ugf.DataManager.ClassManagement
                 }
                 catch (Exception e)
                 {
-                    await Console.Error.WriteAsync($"Id: {o.ClassId}, Name: {o.Name}");
+                    if (resource is null || obj is null)
+                    {
+                        await Console.Error.WriteLineAsync($"[Null] Id: {o.ClassId}, Name: {o.Name}");
+                    }
+                    else
+                    {
+                        await Console.Error.WriteLineAsync($"[Error] Id: {o.ClassId}, Name: {o.Name}");
+
+                        if (restore)
+                        {
+                            resource.SaveObject(obj);
+                            o.Data = resource.Data;
+                            await _objectRepository.UpdateAsync(o);
+                        }
+                    }
                     Console.Error.Write(e);
                 }
             }

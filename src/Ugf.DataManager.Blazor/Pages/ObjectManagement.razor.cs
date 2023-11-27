@@ -85,7 +85,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         ValueConverter = o =>
                         {
                             Guid classId = ((SpecificObjectDto)o).ClassId;
-                            return classId == default ? string.Empty : U.Tm[classId]?.Name;
+                            return classId == default ? string.Empty : U.Tm[classId]?.Type.Name;
                         }
                     },
                     new()
@@ -109,9 +109,6 @@ namespace Ugf.DataManager.Blazor.Pages
             Toolbar.AddButton(L["NewObject"],
                 OpenCreateModalAsync,
                 IconName.Add);
-            Toolbar.AddButton(L["CheckObject"],
-                AppService.CheckObjectsValidAsync,
-                IconName.Check);
 
             return base.SetToolbarItemsAsync();
         }
@@ -126,8 +123,8 @@ namespace Ugf.DataManager.Blazor.Pages
         public async Task OpenObjectDataModalAsync(SpecificObjectDto dto)
         {
             EditingEntity = await AppService.GetAsync(dto.Id);
-            Type type = U.Tm[EditingEntity.ClassId];
-            EditingObject = U.Get(type);
+            TypeDescriptor descriptor = U.Tm[EditingEntity.ClassId];
+            EditingObject = U.Get(descriptor.Type);
             
             ResourceDescriptor resource = new(EditingEntity.Name)
             {
