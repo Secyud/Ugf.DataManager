@@ -34,7 +34,7 @@ namespace Ugf.DataManager.ClassManagement
                     continue;
                 }
                 
-                Console.WriteLine($"[Check] {o.Name} for class id: {o.ClassId} ");
+                Logger.LogInformation("[Check] {Name} for class id: {ClassId} ", o.Name, o.ClassId);
 
                 ResourceDescriptor resource = null;
                 object obj = null;
@@ -52,7 +52,6 @@ namespace Ugf.DataManager.ClassManagement
                 {
                     if (resource is not null && obj is not null)
                     {
-                        await Console.Error.WriteLineAsync("Need restore.");
                         if (restore)
                         {
                             resource.SaveObject(obj);
@@ -60,7 +59,7 @@ namespace Ugf.DataManager.ClassManagement
                             await _objectRepository.UpdateAsync(o);
                         }
                     }
-                    Console.Error.Write(e);
+                    Logger.LogError("{Exception}",e);
                 }
             }
         }

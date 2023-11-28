@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
 using Ugf.DataManager.ClassManagement;
@@ -125,7 +126,7 @@ namespace Ugf.DataManager.Blazor.Pages
             EditingEntity = await AppService.GetAsync(dto.Id);
             TypeDescriptor descriptor = U.Tm[EditingEntity.ClassId];
             EditingObject = U.Get(descriptor.Type);
-            
+
             ResourceDescriptor resource = new(EditingEntity.Name)
             {
                 Data = EditingEntity.Data
@@ -136,11 +137,11 @@ namespace Ugf.DataManager.Blazor.Pages
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError("{Exception}", e);
             }
 
             ClassContainer = await ContainerAppService.GetAsync(EditingEntity.ClassId);
-        
+
             await ObjectDataModal.Show();
         }
 
