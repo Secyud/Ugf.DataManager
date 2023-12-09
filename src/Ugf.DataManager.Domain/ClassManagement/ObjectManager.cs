@@ -34,7 +34,7 @@ namespace Ugf.DataManager.ClassManagement
                     continue;
                 }
                 
-                Logger.LogInformation("[Check] {Name} for class id: {ClassId} ", o.Name, o.ClassId);
+                Console.WriteLine($"[Check] {o.Name} for class id: { o.ClassId} ");
 
                 ResourceDescriptor resource = null;
                 object obj = null;
@@ -59,7 +59,7 @@ namespace Ugf.DataManager.ClassManagement
                             await _objectRepository.UpdateAsync(o);
                         }
                     }
-                    Logger.LogError("{Exception}",e);
+                    Console.WriteLine(e);
                 }
             }
         }
@@ -72,9 +72,7 @@ namespace Ugf.DataManager.ClassManagement
                 (await _objectRepository.GetQueryableAsync())
                 .Where(u =>
                     objectIds.Contains(u.Id) &&
-                    !u.IsDeleted &&
-                    u.Data != null &&
-                    u.Data.Any())
+                    !u.IsDeleted)
                 .ToList();
 
             string path = Path.Combine(_configuration["ConfigPath"] ?? AppContext.BaseDirectory, "OutConfigs");

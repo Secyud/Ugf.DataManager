@@ -74,12 +74,6 @@ namespace Ugf.DataManager.Blazor.Pages
                     },
                     new()
                     {
-                        Title = L["Name"],
-                        Sortable = true,
-                        Data = nameof(SpecificObjectDto.Name)
-                    },
-                    new()
-                    {
                         Title = L["Class"],
                         Sortable = true,
                         Data = nameof(SpecificObjectDto.ClassId),
@@ -88,6 +82,12 @@ namespace Ugf.DataManager.Blazor.Pages
                             Guid classId = ((SpecificObjectDto)o).ClassId;
                             return classId == default ? string.Empty : U.Tm[classId]?.Type.Name;
                         }
+                    },
+                    new()
+                    {
+                        Title = L["Name"],
+                        Sortable = true,
+                        Data = nameof(SpecificObjectDto.Name)
                     },
                     new()
                     {
