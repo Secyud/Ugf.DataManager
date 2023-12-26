@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Domain.Repositories;
 
 namespace Ugf.DataManager.ClassManagement
 {
@@ -74,22 +75,23 @@ namespace Ugf.DataManager.ClassManagement
 
         public async Task CreateThisAndBase(Guid id)
         {
-            TypeDescriptor descriptor = U.Tm[id];
-            while (descriptor is not null)
+            Type type = U.Tm[id]?.Type;
+            while (U.Tm.IsRegistered(type))
             {
                 ClassContainer entity =
-                    await _repository.FindAsync(id);
+                    await _repository.FindAsync(type.GUID);
 
                 if (entity is not null)
                 {
-                    await CheckPropertiesAsync(id);
+                    entity.Name = type.Name;
+                    await CheckPropertiesAsync(type.GUID);
                 }
                 else
                 {
-                    await CreateNewAsync(id);
+                    await CreateNewAsync(type.GUID);
                 }
 
-                descriptor = U.Tm.TryGet(descriptor.Type.BaseType);
+                type = type.BaseType;
             }
         }
 
@@ -119,13 +121,13 @@ namespace Ugf.DataManager.ClassManagement
 
         private async Task<List<ClassProperty>> GetPropertiesByIdAsync(Guid id)
         {
-            List<Guid> findIds = new();
-            TypeDescriptor descriptor = U.Tm[id];
+            List<Guid> findIds = [];
+            Type type = U.Tm[id]?.Type;
 
-            while (descriptor is not null)
+            while (U.Tm.IsRegistered(type))
             {
-                findIds.Add(descriptor.Id);
-                descriptor = U.Tm.TryGet(descriptor.Type.BaseType);
+                findIds.Add(type.GUID);
+                type = type.BaseType;
             }
 
             return
@@ -144,6 +146,11 @@ namespace Ugf.DataManager.ClassManagement
             await CheckPropertiesAsync(classId);
 
             return c;
+        }
+
+        protected override Task DeleteByIdAsync(Guid id)
+        {
+            return Repository.HardDeleteAsync(u => u.Id == id);
         }
     }
 }

@@ -9,9 +9,12 @@
 
 <Fields>
     <Field ColumnSize="ColumnSize.Is12">
-        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                      TextField="u => u.Type.Name" ValueField="u => u.Id"
-                      @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
+        <Autocomplete TItem="Type" TValue="Guid"
+                      Data="U.Tm.GetRegisteredType()"
+                      TextField="u => u.Name"
+                      ValueField="u => u.GUID"
+                      @bind-SelectedValue="@GetListInput.ClassId"
+                      Placeholder="@L["BaseClass"]"/>
 
     </Field>
     <Field ColumnSize="ColumnSize.Is6">

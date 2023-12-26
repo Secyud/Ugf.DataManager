@@ -17,9 +17,12 @@
     <CardBody>
         <Fields>
             <Field ColumnSize="ColumnSize.Is6">
-                <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                              TextField="u => u.Type.Name" ValueField="u => u.Id"
-                              @bind-SelectedValue="@GetListInput.ClassId" Placeholder="@L["BaseClass"]"/>
+                <Autocomplete TItem="Type" TValue="Guid" 
+                              Data="U.Tm.GetRegisteredType()"
+                              TextField="u => u.Name"
+                              ValueField="u => u.GUID"
+                              @bind-SelectedValue="@GetListInput.ClassId" 
+                              Placeholder="@L["BaseClass"]"/>
 
             </Field>
             <Field ColumnSize="ColumnSize.Is6">
@@ -117,9 +120,11 @@
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field ColumnSize="ColumnSize.Is6">
-                        <Autocomplete TItem="TypeDescriptor" TValue="Guid" Data="U.Tm.GetChildrenOfBaseType()"
-                                      TextField="u => u.Type.Name" ValueField="u => u.Id"
-                                      @bind-SelectedValue="@NewEntity.Id" Placeholder="@L["Class"]"/>
+                        <Autocomplete  TItem="Type" TValue="Guid" 
+                                       Data="U.Tm.GetRegisteredType()"
+                                       TextField="u => u.Name"
+                                       ValueField="u => u.GUID"
+                                       @bind-SelectedValue="@NewEntity.Id" Placeholder="@L["Class"]"/>
                     </Field>
                 </Validations>
             </ModalBody>

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +10,7 @@ using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Modularity.Plugins;
 using Serilog;
 using Serilog.Events;
+using Ugf.DataManager.PluginSource;
 
 namespace Ugf.DataManager.Blazor
 {
@@ -36,20 +38,22 @@ namespace Ugf.DataManager.Blazor
             //         Assembly.LoadFrom(file);
             //     }
             // }
-
-            U.DataManager = true;
-            UgfApplicationFactory factory = new();
-            Assembly assembly = Assembly.LoadFrom(@"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\InfinityWorldChess.dll");
-            var type = assembly.GetType("InfinityWorldChess.InfinityWorldChessModule");
-            factory.Create(null, type,new PlugInSourceList()
-            {
-                new FilePluginSource(
-                    @"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\BasicPackage.dll")
-            });
             try
             {
                 Log.Information("Starting web host.");
                 var builder = WebApplication.CreateBuilder(args);
+
+                var managedPath = $"../{builder.Configuration["GameName"]}_Data/Managed";
+                
+                U.DataManager = true;
+                
+                UgfApplicationFactory factory = new();
+                factory.Create(null, typeof(DataManagerStartModule), [
+                    new FolderPluginSource(managedPath),
+                    new LocalSteamPluginSource()
+                ]);
+
+
                 builder.Host.AddAppSettingsSecretsJson()
                     .UseAutofac()
                     .UseSerilog();

@@ -2,10 +2,11 @@
 @using Secyud.Ugf
 <div class="container">
     <Autocomplete Style="width: 100%"
-                  TItem="TypeDescriptor" TValue="Guid"
+                  TItem="Type" TValue="Guid"
+                  Data="U.Tm.GetRegisteredType(BaseClass)"
+                  TextField="u => u.Name"
+                  ValueField="u => u.GUID"
                   Placeholder="@Placeholder"
-                  Data="U.Tm.GetChildrenOfBaseType(BaseClass)"
-                  TextField="u => u.Type.Name" ValueField="u => u.Id"
                   SelectedValueChanged="v => SelectClassId = v"
                   Filter="AutocompleteFilter.Contains"/>
 
