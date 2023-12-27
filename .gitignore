@@ -1,6 +1,7 @@
 .idea
 bin
 obj
+publish
 node_modules
 libs
 Logs

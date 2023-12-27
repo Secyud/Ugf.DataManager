@@ -43,7 +43,8 @@ namespace Ugf.DataManager.Blazor
                 Log.Information("Starting web host.");
                 var builder = WebApplication.CreateBuilder(args);
 
-                var managedPath = $"../{builder.Configuration["GameName"]}_Data/Managed";
+                var managedPath = @"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp";
+                //var managedPath = $"../{builder.Configuration["GameName"]}_Data/Managed";
                 
                 U.DataManager = true;
                 

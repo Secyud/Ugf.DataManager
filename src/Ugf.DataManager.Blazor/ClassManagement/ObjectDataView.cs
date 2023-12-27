@@ -25,20 +25,24 @@ namespace Ugf.DataManager.Blazor.ClassManagement
         public static async Task<ObjectDataView> CreateAsync(object obj,IClassContainerAppService appService)
         {
             Type objectType = obj.GetType();
+
+            if (!objectType.IsClass)
+            {
+                U.LogError("non-class type is not support for s field!");
+                return new ObjectDataView(obj,new ClassContainerDto());
+            }
+            
             ClassContainerDto classContainer = await appService.GetAsync(objectType.GUID);
             ObjectDataView view = new(obj,classContainer);
-            TypeDescriptor classDesc = U.Tm[objectType];
-            
-            PropertyDescriptor descriptor = classDesc.Properties;
-            Type type = classDesc.Type;
             
             
-            while (descriptor is not null && type is not null)
+            while (U.Tm.IsRegistered(objectType))
             {
-                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(type.GUID);
-                view.AddProperty(descriptor.Attributes, properties);
-                descriptor = descriptor.BaseProperty;
-                type = type.BaseType;
+                TypeDescriptor classDesc = U.Tm[objectType];
+                if (classDesc is null) break;
+                List<ClassPropertyDto> properties = await appService.GetPropertiesAsync(classDesc.Type.GUID);
+                view.AddProperty(classDesc.Properties.Attributes, properties);
+                objectType = objectType.BaseType; 
             }
             view.Properties.Sort(
                 (u,v)=>
