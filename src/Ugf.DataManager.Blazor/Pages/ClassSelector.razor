@@ -2,11 +2,10 @@
 @using Secyud.Ugf
 <div class="container">
     <Autocomplete Style="width: 100%"
-                  TItem="Type" TValue="Guid"
-                  Data="U.Tm.GetRegisteredType(BaseClass)"
-                  TextField="u => u.Name"
-                  ValueField="u => u.GUID"
-                  Placeholder="@Placeholder"
+                  TItem="TypeDescriptor" TValue="Guid"
+                  Data="TypeManager.Instance.GetRegisteredType(BaseClass)"
+                  TextField="u => u.Type.Name"
+                  ValueField="u => u.Type.GUID"
                   SelectedValueChanged="v => SelectClassId = v"
                   Filter="AutocompleteFilter.Contains"/>
 
@@ -35,9 +34,6 @@
     
     [Parameter]
     public EventCallback CancelAction { get; set; }
-
-    [Parameter]
-    public string Placeholder { get; set; }
 
     private Guid SelectClassId { get; set; }
 

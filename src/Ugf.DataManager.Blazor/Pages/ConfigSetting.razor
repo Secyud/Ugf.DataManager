@@ -1,18 +1,15 @@
-﻿@using Secyud.Ugf
-@using Secyud.Ugf.DataManager
-@using Ugf.DataManager.ClassManagement
-@using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns
-@using Volo.Abp.Guids
+﻿@using Secyud.Ugf.DataManager
+@using Ugf.DataManager.DataConfiguration
 
-@inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
+@inherits AbpCrudPageBase<Ugf.DataManager.DataConfiguration.ISpecificObjectAppService, Ugf.DataManager.DataConfiguration.SpecificObjectDto, Guid, Ugf.DataManager.DataConfiguration.GetObjectListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 
 <Fields>
     <Field ColumnSize="ColumnSize.Is12">
-        <Autocomplete TItem="Type" TValue="Guid"
-                      Data="U.Tm.GetRegisteredType()"
-                      TextField="u => u.Name"
-                      ValueField="u => u.GUID"
+        <Autocomplete TItem="TypeDescriptor" TValue="Guid"
+                      Data="TypeManager.Instance.GetRegisteredType()"
+                      TextField="u => u.Type.Name"
+                      ValueField="u => u.Type.GUID"
                       @bind-SelectedValue="@GetListInput.ClassId"
                       Placeholder="@L["BaseClass"]"/>
 

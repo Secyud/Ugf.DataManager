@@ -1,0 +1,39 @@
+﻿@using Secyud.Ugf.DataManager
+@using Castle.Core.Internal
+@inherits ObjectFieldBase
+<Field ColumnSize="ColumnSize.Is3">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        @if (FieldAttribute.ShowType == SShowType.Special)
+        {
+            <GuidEdit @bind-Value="@Guid"/>
+        }
+        else
+        {
+            <ClassSelector BaseClass="GetLimitType()"
+                           EnsureAction="id => Guid = id"/>
+            @(Guid)
+        }
+    </FieldBody>
+    <FieldHelp>
+        @Description
+    </FieldHelp>
+</Field>
+
+@code {
+
+    public Guid Guid
+    {
+        get => (Guid)GetValue();
+        set => SetValue(value);
+    }
+
+    protected Type GetLimitType()
+    {
+        TypeLimitAttribute limit = FieldAttribute.Info
+            .GetAttribute<TypeLimitAttribute>();
+        return limit?.LimitType;
+    }
+}

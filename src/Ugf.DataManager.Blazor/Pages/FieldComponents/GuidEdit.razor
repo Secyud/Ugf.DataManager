@@ -1,0 +1,33 @@
+﻿@using System.Diagnostics.CodeAnalysis
+@using JetBrains.Annotations
+@if (IsClassId)
+{
+    <ClassSelector BaseClass="TypeLimit" EnsureAction="SetGuid"/>
+}
+else
+{
+    <TextEdit Text="@Value.ToString()" TextChanged="SetGuid"/>
+}
+
+
+@code {
+
+    [Parameter] public bool IsClassId { get; set; }
+    [Parameter] public Type TypeLimit { get; set; }
+    [Parameter] public Guid Value { get; set; }
+    [Parameter] public EventCallback<Guid> ValueChanged { get; set; }
+
+    private void SetGuid(string str)
+    {
+        if (!Guid.TryParse(str, out Guid id))
+            id = Guid.Empty;
+        SetGuid(id);
+    }
+
+    private async void SetGuid(Guid id)
+    {
+        await ValueChanged.InvokeAsync(id);
+        Value = id;
+    }
+
+}

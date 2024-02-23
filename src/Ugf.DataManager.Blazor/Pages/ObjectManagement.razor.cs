@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Secyud.Ugf;
 using Secyud.Ugf.DataManager;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 using Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
@@ -16,9 +14,7 @@ namespace Ugf.DataManager.Blazor.Pages
 {
     public partial class ObjectManagement
     {
-        [Inject] public IClassContainerAppService ContainerAppService { get; set; }
         public object EditingObject { get; set; }
-        public ClassContainerDto ClassContainer { get; set; }
         public Modal ObjectDataModal { get; set; }
         protected PageToolbar Toolbar { get; } = new();
         protected List<TableColumn> ObjectManagementTableColumns => TableColumns.Get<ObjectManagement>();
@@ -80,7 +76,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         ValueConverter = o =>
                         {
                             Guid classId = ((SpecificObjectDto)o).ClassId;
-                            return classId == default ? string.Empty : U.Tm[classId]?.Type.Name;
+                            return classId == default ? string.Empty : TypeManager.Instance[classId]?.Type.Name;
                         }
                     },
                     new()
@@ -117,31 +113,27 @@ namespace Ugf.DataManager.Blazor.Pages
         public async Task CloseObjectDataModalAsync()
         {
             EditingObject = null;
-            ClassContainer = null;
             await InvokeAsync(ObjectDataModal.Hide);
         }
 
         public async Task OpenObjectDataModalAsync(SpecificObjectDto dto)
         {
             EditingEntity = await AppService.GetAsync(dto.Id);
-            TypeDescriptor descriptor = U.Tm[EditingEntity.ClassId];
-            EditingObject = U.Get(descriptor.Type);
 
-            ResourceDescriptor resource = new(EditingEntity.Name)
+            DataResource resource = new()
             {
+                Id = 0,
+                Type = EditingEntity.ClassId,
                 Data = EditingEntity.Data
             };
             try
             {
-                resource.LoadObject(EditingObject);
+                EditingObject = resource.GetObject();
             }
             catch (Exception e)
             {
                 Logger.LogError("{Exception}", e);
             }
-
-            ClassContainer = await ContainerAppService.GetAsync(EditingEntity.ClassId);
-
             await ObjectDataModal.Show();
         }
 
@@ -151,14 +143,13 @@ namespace Ugf.DataManager.Blazor.Pages
             // cancel close if clicked outside of modal area
             arg.Cancel = arg.CloseReason == CloseReason.FocusLostClosing;
             EditingObject = null;
-            ClassContainer = null;
             return Task.CompletedTask;
         }
 
         private async Task UpdateObjectDataAsync()
         {
-            ResourceDescriptor resource = new(EditingEntity.Name);
-            resource.SaveObject(EditingObject);
+            DataResource resource = new();
+            resource.SetObject(EditingObject);
             EditingEntity.Data = resource.Data;
             await AppService.UpdateAsync(EditingEntity.Id, EditingEntity);
             await CloseObjectDataModalAsync();

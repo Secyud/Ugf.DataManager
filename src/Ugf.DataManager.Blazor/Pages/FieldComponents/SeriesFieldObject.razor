@@ -1,0 +1,122 @@
+﻿@using Secyud.Ugf.DataManager
+@inherits SeriesFieldBase
+@implements IObjectField
+@{
+    object value = Value;
+
+    @if (value is null)
+    {
+        <ClassSelector BaseClass="FieldAttribute.ElementType"
+                       EnsureAction="CreateClassObject"/>
+    }
+    else
+    {
+        <Accordion>
+            <Collapse>
+                <CollapseHeader>
+                    <Heading Size="HeadingSize.Is6">
+                        <AccordionToggle>
+                            @LabelText - @FieldAttribute.ElementType.Name
+                        </AccordionToggle>
+                    </Heading>
+                </CollapseHeader>
+                <CollapseBody>
+                    <Button Clicked="DestroyClassObject" Color="Color.Danger">×</Button>
+                    @{
+                        Type objectType = value.GetType();
+                        TypeDescriptor descriptor =
+                            TypeManager.Instance[objectType];
+                        List<SAttribute> list = [];
+                        descriptor.Properties.FillAttributes(list);
+                        @for (int i = 0; i < list.Count; i++)
+                        {
+                            SAttribute attr = list[i];
+                            if (attr.Type.HasFlag(FieldType.List))
+                            {
+                                <ObjectFieldSeries FieldAttribute="attr" ParentField="@this"/>
+                            }
+                            else
+                            {
+                                switch (attr.Type)
+                                {
+                                    case FieldType.UInt8:
+                                    case FieldType.UInt16:
+                                    case FieldType.UInt32:
+                                    case FieldType.UInt64:
+                                    case FieldType.Int8:
+                                    case FieldType.Int16:
+                                    case FieldType.Int32:
+                                    case FieldType.Int64:
+                                        <ObjectFieldInteger FieldAttribute="attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.Bool:
+                                        <ObjectFieldBoolean FieldAttribute="attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.Decimal:
+                                    case FieldType.Single:
+                                    case FieldType.Double:
+                                        <ObjectFieldNumber FieldAttribute="attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.String:
+                                        <ObjectFieldText FieldAttribute="attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.Guid:
+                                        <ObjectFieldGuid FieldAttribute=" attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.Object:
+                                        <ObjectFieldObject FieldAttribute="attr" ParentField="@this"/>
+                                        break;
+                                    case FieldType.List:
+                                    case FieldType.InValid:
+                                    default: throw new ArgumentOutOfRangeException();
+                                }
+                            }
+                        }
+                    }
+                </CollapseBody>
+            </Collapse>
+        </Accordion>
+    }
+}
+
+
+@code {
+
+    private object _cache;
+
+    public object Value
+    {
+        get => _cache;
+        set
+        {
+            _cache = value;
+            SetValue(value);
+        }
+    }
+
+    public object Reference => Value;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _cache = GetValue();
+    }
+
+    private void CreateClassObject(Guid id)
+    {
+        Value = TypeManager.Instance[id].CreateInstance();
+    }
+
+    private void DestroyClassObject()
+    {
+        if (ParentField.List.IsFixedSize)
+        {
+            Value = null;
+        }
+        else
+        {
+            RemoveSelf();
+        }
+    }
+
+}

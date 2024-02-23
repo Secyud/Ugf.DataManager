@@ -1,0 +1,20 @@
+﻿@inherits ObjectFieldBase
+<Field ColumnSize="ColumnSize.Is3">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        <NumericEdit @bind-Value="@Value"/>
+    </FieldBody>
+    <FieldHelp>
+        @Description
+    </FieldHelp>
+</Field>
+
+@code {
+    public object Value
+    {
+        get => GetValue();
+        set => SetValue(Convert.ChangeType(value, FieldAttribute.ElementType));
+    }
+}

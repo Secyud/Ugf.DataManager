@@ -53,4 +53,16 @@
     <ItemGroup>
       <None Remove="Logs\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\DataEditor.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\DescriptionField.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\FieldContainer.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\FieldForObject.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\GuidField.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\IntegerField.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\NumberField.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\ObjectField.razor" />
+      <_ContentIncludedByDefault Remove="Pages\EditComponents\StringField.razor" />
+    </ItemGroup>
 </Project>

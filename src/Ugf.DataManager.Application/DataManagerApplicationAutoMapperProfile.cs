@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 
 namespace Ugf.DataManager
 {
@@ -7,11 +7,7 @@ namespace Ugf.DataManager
     {
         public DataManagerApplicationAutoMapperProfile()
         {
-            CreateMap<ClassProperty, ClassPropertyDto>();
-            CreateMap<ClassContainer, ClassContainerDto>();
             CreateMap<SpecificObject, SpecificObjectDto>();
-            CreateMap<ClassPropertyDto, ClassProperty>();
-            CreateMap<ClassContainerDto, ClassContainer>();
             CreateMap<SpecificObjectDto, SpecificObject>();
             CreateMap<DataConfig, DataConfigDto>();
             CreateMap<DataConfigItem, DataConfigItemDto>();

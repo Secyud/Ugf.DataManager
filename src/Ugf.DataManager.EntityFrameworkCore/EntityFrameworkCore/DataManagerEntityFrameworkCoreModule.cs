@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -40,7 +40,6 @@ namespace Ugf.DataManager.EntityFrameworkCore
             {
                 /* Remove "includeAllEntities: true" to create
                  * default repositories only for aggregate roots */
-                options.AddRepository<ClassContainer, ClassContainerRepository>();
                 options.AddRepository<SpecificObject, SpecificObjectRepository>();
                 options.AddRepository<DataConfig, DataConfigRepository>();
                 options.Entity<DataConfig>(u =>

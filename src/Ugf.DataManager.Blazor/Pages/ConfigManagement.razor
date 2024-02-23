@@ -1,7 +1,6 @@
 ﻿@page "/config"
-
-@using Ugf.DataManager.ClassManagement
-@inherits AbpCrudPageBase<IDataConfigAppService, DataConfigDto, Guid, GetConfigListInput>
+@using Ugf.DataManager.DataConfiguration
+@inherits AbpCrudPageBase<Ugf.DataManager.DataConfiguration.IDataConfigAppService, Ugf.DataManager.DataConfiguration.DataConfigDto, Guid, Ugf.DataManager.DataConfiguration.GetConfigListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 <Card>
     <CardHeader>

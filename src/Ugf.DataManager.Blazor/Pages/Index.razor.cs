@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 
 namespace Ugf.DataManager.Blazor.Pages
 {

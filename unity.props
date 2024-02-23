@@ -1,11 +1,15 @@
 <Project>
+    <PropertyGroup>
+        <DefineConstants>DATA_MANAGER</DefineConstants>
+        <DefineConstants>DISABLE_STEAM_MODULE</DefineConstants>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="Secyud.Ugf">
-            <HintPath>D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\Secyud.Ugf.dll</HintPath>
+            <HintPath>D:\Projects\InfinityTextWorld\Temp\Bin\Debug\Assembly-CSharp\Secyud.Ugf.Core.dll</HintPath>
         </Reference>
-        <Reference Include="Secyud.Ugf">
-            <HintPath>D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp\Secyud.Ugf.Steam.dll</HintPath>
-        </Reference>
+<!--        <Reference Include="Secyud.Ugf">-->
+<!--            <HintPath>D:\Projects\InfinityTextWorld\Temp\Bin\Debug\Assembly-CSharp\Secyud.Ugf.Steam.dll</HintPath>-->
+<!--        </Reference>-->
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>C:\Environment\unity\2021.3.25f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
         </Reference>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 using Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;

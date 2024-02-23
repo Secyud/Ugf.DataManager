@@ -1,0 +1,21 @@
+﻿@inherits SeriesFieldBase
+<Field ColumnSize="ColumnSize.Is3">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        <Check @bind-Checked="Checked"/>
+        @if (!ParentField.List.IsFixedSize)
+        {
+            <Button Clicked="RemoveSelf" Color="Color.Danger">×</Button>
+        }
+    </FieldBody>
+</Field>
+
+@code {
+    public bool Checked
+    {
+        get => (bool)GetValue();
+        set => SetValue(value);
+    }
+}

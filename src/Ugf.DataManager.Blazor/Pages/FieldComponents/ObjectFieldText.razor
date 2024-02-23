@@ -1,0 +1,29 @@
+﻿@using Secyud.Ugf.DataManager
+@inherits ObjectFieldBase
+<Field ColumnSize="ColumnSize.IsFull">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        @if (FieldAttribute.ShowType == SShowType.Normal)
+        {
+            <TextEdit @bind-Text="Text"/>
+        }
+        else
+        {
+            <MemoEdit @bind-Text="Text"/>
+        }
+    </FieldBody>
+    <FieldHelp>
+        @Description
+    </FieldHelp>
+</Field>
+
+@code {
+
+    public string Text
+    {
+        get => (string)GetValue();
+        set => SetValue(value);
+    }
+}

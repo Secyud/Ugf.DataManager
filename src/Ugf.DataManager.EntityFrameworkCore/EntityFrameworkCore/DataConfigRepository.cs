@@ -4,22 +4,16 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
 namespace Ugf.DataManager.EntityFrameworkCore
 {
-    public class DataConfigRepository :
-        EfCoreRepository<DataManagerDbContext, DataConfig, Guid>,
+    public class DataConfigRepository(IDbContextProvider<DataManagerDbContext> dbContextProvider) :
+        EfCoreRepository<DataManagerDbContext, DataConfig, Guid>(dbContextProvider),
         IDataConfigRepository
     {
-        public DataConfigRepository(
-            IDbContextProvider<DataManagerDbContext> dbContextProvider)
-            : base(dbContextProvider)
-        {
-        }
-
         public async Task<List<DataConfig>> GetListAsync(int skipCount, int maxResultCount, string sorting, string name,
             bool includeDetails = false,
             CancellationToken token = default)

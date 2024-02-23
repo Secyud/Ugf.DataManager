@@ -1,10 +1,11 @@
 ﻿@page "/object"
-
-@using Ugf.DataManager.ClassManagement
-@using Ugf.DataManager.Blazor.Pages.FieldComponents
-@using Secyud.Ugf
 @using Secyud.Ugf.DataManager
-@inherits AbpCrudPageBase<ISpecificObjectAppService, SpecificObjectDto, Guid, GetObjectListInput>
+@using Ugf.DataManager.DataConfiguration
+@using System.Reflection
+@using System.ComponentModel
+@using Ugf.DataManager.Blazor.Pages.FieldComponents
+@using TypeDescriptor = Secyud.Ugf.DataManager.TypeDescriptor
+@inherits AbpCrudPageBase<Ugf.DataManager.DataConfiguration.ISpecificObjectAppService, Ugf.DataManager.DataConfiguration.SpecificObjectDto, Guid, Ugf.DataManager.DataConfiguration.GetObjectListInput>
 @inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
 
 <Card>
@@ -18,10 +19,10 @@
     <CardBody>
         <Fields>
             <Field ColumnSize="ColumnSize.Is12">
-                <Autocomplete TItem="Type" TValue="Guid"
-                              Data="U.Tm.GetRegisteredType()"
-                              TextField="u => u.Name"
-                              ValueField="u => u.GUID"
+                <Autocomplete TItem="TypeDescriptor" TValue="Guid"
+                              Data="TypeManager.Instance.GetRegisteredType()"
+                              TextField="u => u.Type.Name"
+                              ValueField="u => u.Type.GUID"
                               @bind-SelectedValue="@GetListInput.ClassId"
                               Placeholder="@L["BaseClass"]"/>
 
@@ -64,10 +65,10 @@
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="Type" TValue="Guid"
-                                      Data="U.Tm.GetRegisteredType()"
-                                      TextField="u => u.Name"
-                                      ValueField="u => u.GUID"
+                        <Autocomplete TItem="TypeDescriptor" TValue="Guid"
+                                      Data="TypeManager.Instance.GetRegisteredType()"
+                                      TextField="u => u.Type.Name"
+                                      ValueField="u => u.Type.GUID"
                                       @bind-SelectedValue="@NewEntity.ClassId"/>
 
                     </Field>
@@ -106,12 +107,11 @@
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
                     <Field>
                         <FieldLabel>@L["Class"]</FieldLabel>
-                        <Autocomplete TItem="Type" TValue="Guid"
-                                      Data="U.Tm.GetRegisteredType()"
-                                      TextField="u => u.Name"
-                                      ValueField="u => u.GUID"
+                        <Autocomplete TItem="TypeDescriptor" TValue="Guid"
+                                      Data="TypeManager.Instance.GetRegisteredType()"
+                                      TextField="u => u.Type.Name"
+                                      ValueField="u => u.Type.GUID"
                                       @bind-SelectedValue="@EditingEntity.ClassId"/>
-
                     </Field>
                     <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
@@ -145,8 +145,7 @@
                 <CloseButton Clicked="CloseObjectDataModalAsync"/>
             </ModalHeader>
             <ModalBody>
-                @if (EditingObject is not null &&
-                     ClassContainer is not null)
+                @if (EditingObject is not null)
                 {
                     <Fields>
                         <Field ColumnSize="ColumnSize.Is12">
@@ -155,17 +154,28 @@
                         </Field>
                         <Field ColumnSize="ColumnSize.Is12">
                             <FieldLabel>@L["Class"]</FieldLabel>
-                            <TextEdit @bind-Text="ClassContainer.Name" ReadOnly/>
+                            <TextEdit Text="@(L[EditingObject.GetType().Name])" ReadOnly/>
                         </Field>
+                        @{
+                            DescriptionAttribute description = EditingObject
+                                .GetType().GetCustomAttribute<DescriptionAttribute>();
+                            if (description is not null)
+                            {
+                                <Field ColumnSize="ColumnSize.Is12">
+                                    <FieldLabel>@L["Description"]</FieldLabel>
+                                    <MemoEdit Text="@description.Description" ReadOnly/>
+                                </Field>
+                            }
+                        }
                         <Field ColumnSize="ColumnSize.Is12">
-                            <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="ClassContainer.Description" ReadOnly/>
+                            <FieldLabel>@L["ResourceId"]</FieldLabel>
+                            <NumericEdit @bind-Value="@EditingEntity.ResourceId"/>
                         </Field>
                         <Field ColumnSize="ColumnSize.Is12">
                             <FieldLabel>@L["Bundle"]</FieldLabel>
                             <NumericEdit @bind-Value="@EditingEntity.BundleId"/>
                         </Field>
-                        <ObjectViewer ViewObject="EditingObject"/>
+                        <RootObjectField RootObject="@EditingObject"/>
                     </Fields>
                 }
             </ModalBody>

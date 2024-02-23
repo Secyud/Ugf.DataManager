@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Secyud.Ugf;
-using Ugf.DataManager.ClassManagement;
+using Secyud.Ugf.DataManager;
+using Ugf.DataManager.DataConfiguration;
 using Ugf.DataManager.Localization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
@@ -21,7 +22,7 @@ namespace Ugf.DataManager.Blazor.Pages
         {
             LocalizationResource = typeof(DataManagerResource);
         }
-        
+
         public Guid ConfigId { get; set; }
 
         private DataConfigDto Config { get; set; }
@@ -40,19 +41,21 @@ namespace Ugf.DataManager.Blazor.Pages
             {
                 Guids.Add(dataConfigDto.Id);
             }
+
             return Task.CompletedTask;
         }
-        
+
         protected override ValueTask SetEntityActionsAsync()
         {
             ObjectEntityActions.Add(new EntityAction
             {
                 Text = "Select",
-                Clicked = async data =>  await ChangeCheckAsync(data.As<SpecificObjectDto>()) 
+                Clicked = async data => await ChangeCheckAsync(data.As<SpecificObjectDto>())
             });
             return ValueTask.CompletedTask;
         }
-        protected override  ValueTask SetTableColumnsAsync()
+
+        protected override ValueTask SetTableColumnsAsync()
         {
             ObjectTableColumns
                 .AddRange(new TableColumn[]
@@ -69,7 +72,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         ValueConverter = o =>
                         {
                             Guid id = ((SpecificObjectDto)o).Id;
-                            return Guids.Contains(id) ? "√" :"×" ;
+                            return Guids.Contains(id) ? "√" : "×";
                         }
                     },
                     new()
@@ -86,7 +89,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         ValueConverter = o =>
                         {
                             Guid classId = ((SpecificObjectDto)o).ClassId;
-                            return U.Tm[classId]?.Type.Name;
+                            return TypeManager.Instance[classId]?.Type.Name;
                         }
                     },
                     new()
@@ -96,7 +99,7 @@ namespace Ugf.DataManager.Blazor.Pages
                         Data = nameof(SpecificObjectDto.BundleId)
                     },
                 });
-            
+
             return ValueTask.CompletedTask;
         }
 
@@ -111,20 +114,21 @@ namespace Ugf.DataManager.Blazor.Pages
             {
                 Guids.Add(item.ObjectId);
             }
+
             await InvokeAsync(StateHasChanged);
         }
-        
+
 
         private async Task UpdateAsync()
         {
             Config = await DataConfigAppService.GetAsync(ConfigId);
             Config.DataConfigItems.Clear();
-            Config.DataConfigItems.AddRange(Guids.Select(u=>new DataConfigItemDto()
+            Config.DataConfigItems.AddRange(Guids.Select(u => new DataConfigItemDto()
             {
                 ConfigId = ConfigId,
                 ObjectId = u
             }));
-            await DataConfigAppService.UpdateAsync(ConfigId,Config);
+            await DataConfigAppService.UpdateAsync(ConfigId, Config);
         }
 
         private void SelectAll()
@@ -134,6 +138,7 @@ namespace Ugf.DataManager.Blazor.Pages
                 Guids.Add(entity.Id);
             }
         }
+
         private void DeSelectAll()
         {
             foreach (SpecificObjectDto entity in Entities)

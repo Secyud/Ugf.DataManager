@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Ugf.DataManager.ClassManagement;
+using Ugf.DataManager.DataConfiguration;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -20,8 +20,8 @@ namespace Ugf.DataManager.EntityFrameworkCore
     [ReplaceDbContext(typeof(IIdentityDbContext))]
     [ReplaceDbContext(typeof(ITenantManagementDbContext))]
     [ConnectionStringName("Default")]
-    public class DataManagerDbContext :
-        AbpDbContext<DataManagerDbContext>,
+    public class DataManagerDbContext(DbContextOptions<DataManagerDbContext> options) :
+        AbpDbContext<DataManagerDbContext>(options),
         IIdentityDbContext,
         ITenantManagementDbContext
     {
@@ -53,17 +53,10 @@ namespace Ugf.DataManager.EntityFrameworkCore
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
-        public DbSet<ClassContainer> ClassContainers { get; set; }
         public DbSet<SpecificObject> SpecificObjects { get; set; }
-        public DbSet<ClassProperty> ClassProperties { get; set; }
         public DbSet<DataConfig> DataConfigs { get; set; }
 
         #endregion
-
-        public DataManagerDbContext(DbContextOptions<DataManagerDbContext> options)
-            : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -79,30 +72,16 @@ namespace Ugf.DataManager.EntityFrameworkCore
             builder.ConfigureOpenIddict();
             builder.ConfigureFeatureManagement();
             builder.ConfigureTenantManagement();
-
-            builder.Entity<ClassContainer>(b =>
-            {
-                b.ConfigureByConvention();
-
-                b.Property(t => t.Name).IsRequired();
-                b.HasIndex(u => u.Name);
-            });
         
             builder.Entity<SpecificObject>(b =>
             {
                 b.ConfigureByConvention();
 
-                b.Property(t => t.Name).IsRequired();
-                b.HasIndex(u => u.Name);
-            });
-        
-            builder.Entity<ClassProperty>(b =>
-            {
-                b.ConfigureByConvention();
-                b.Property(cs => cs.ClassId).IsRequired();
+                b.HasIndex(u => u.ResourceId);
+                b.HasIndex(u => u.BundleId);
                 b.HasIndex(u => u.ClassId);
             });
-            
+        
             builder.Entity<DataConfig>(b =>
             {
                 b.ConfigureByConvention();

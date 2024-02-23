@@ -1,9 +1,10 @@
-﻿using System;
+﻿#if !DISABLE_STEAM_MODULE
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Secyud.Ugf.ModManagement;
 using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Modularity.Plugins;
 
@@ -47,3 +48,5 @@ namespace Ugf.DataManager.PluginSource
         }
     }
 }
+
+#endif

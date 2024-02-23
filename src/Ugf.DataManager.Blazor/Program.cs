@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +8,6 @@ using Secyud.Ugf.Modularity;
 using Secyud.Ugf.Modularity.Plugins;
 using Serilog;
 using Serilog.Events;
-using Ugf.DataManager.PluginSource;
 
 namespace Ugf.DataManager.Blazor
 {
@@ -41,25 +38,25 @@ namespace Ugf.DataManager.Blazor
             try
             {
                 Log.Information("Starting web host.");
-                var builder = WebApplication.CreateBuilder(args);
+                WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-                var managedPath = @"D:\Projects\infinity-world-chess\Temp\Bin\Debug\Assembly-CSharp";
-                //var managedPath = $"../{builder.Configuration["GameName"]}_Data/Managed";
+                string managedPath = builder.Configuration["ConfigPath"];
                 
-                U.DataManager = true;
-                
-                UgfApplicationFactory factory = new();
-                factory.Create(null, typeof(DataManagerStartModule), [
-                    new FolderPluginSource(managedPath),
-                    new LocalSteamPluginSource()
+                UgfApplicationFactory factory = new(typeof(UgfCoreModule),
+                [
+#if !DISABLE_STEAM_MODULE
+                    new LocalSteamPluginSource(),
+#endif
+                    new FolderPluginSource(managedPath)
                 ]);
+                factory.ConfigureDataManager();
 
 
                 builder.Host.AddAppSettingsSecretsJson()
                     .UseAutofac()
                     .UseSerilog();
                 await builder.AddApplicationAsync<DataManagerBlazorModule>();
-                var app = builder.Build();
+                WebApplication app = builder.Build();
                 await app.InitializeApplicationAsync();
                 await app.RunAsync();
                 return 0;
