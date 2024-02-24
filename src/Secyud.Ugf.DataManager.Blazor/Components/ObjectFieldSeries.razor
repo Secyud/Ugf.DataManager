@@ -1,0 +1,136 @@
+﻿@using System.Collections
+@using Secyud.Ugf.DataManager
+@inherits ObjectFieldBase
+
+@if (List is not null)
+{
+    <Accordion>
+        <Collapse>
+            <CollapseHeader>
+                <Heading Size="HeadingSize.Is5">
+                    <AccordionToggle>
+                        <Tooltip Text="@Description">
+                            @LabelText - @FieldAttribute.ElementType.Name
+                        </Tooltip>
+                    </AccordionToggle>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody>
+                @{
+                    FieldType elementType = FieldAttribute.Type & ~ FieldType.List;
+                }
+                @if (!List.IsFixedSize)
+                {
+                    if (elementType == FieldType.Object)
+                    {
+                        <ClassSelector BaseClass="FieldAttribute.ElementType"
+                                       EnsureAction="CreateClassObject"/>
+                    }
+                    else
+                    {
+                        <Button Clicked="CreateStructObject">+</Button>
+                    }
+                }
+                <Fields>
+                    @for (int i = 0; i < List.Count; i++)
+                    {
+                        switch (elementType)
+                        {
+                            case FieldType.UInt8:
+                            case FieldType.UInt16:
+                            case FieldType.UInt32:
+                            case FieldType.UInt64:
+                            case FieldType.Int8:
+                            case FieldType.Int16:
+                            case FieldType.Int32:
+                            case FieldType.Int64:
+                                <SeriesFieldInteger FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.Bool:
+                                <SeriesFieldBoolean FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.Decimal:
+                            case FieldType.Single:
+                            case FieldType.Double:
+                                <SeriesFieldNumber FieldAttribute="FieldAttribute"
+                                                   Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.String:
+                                <SeriesFieldText FieldAttribute="FieldAttribute"
+                                                 Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.Guid:
+                                <SeriesFieldGuid FieldAttribute="FieldAttribute"
+                                                 Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.Object:
+                                <SeriesFieldObject FieldAttribute="FieldAttribute"
+                                                   Index="i" ParentField="@this"/>
+                                break;
+                            case FieldType.List:
+                            case FieldType.InValid:
+                            default: throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                </Fields>
+            </CollapseBody>
+        </Collapse>
+    </Accordion>
+}
+
+
+@code {
+
+    public IList List { get; private set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        List = (IList)GetValue();
+    }
+
+    public void CreateStructObject()
+    {
+        FieldType type = FieldAttribute.Type & ~ FieldType.List;
+        Add(type switch
+        {
+            FieldType.UInt8   => default(byte), FieldType.UInt16  => default(ushort),
+            FieldType.UInt32  => default(uint), FieldType.UInt64  => default(ulong),
+            FieldType.Int8    => default(sbyte), FieldType.Int16  => default(short),
+            FieldType.Int32   => default(int), FieldType.Int64    => default(long),
+            FieldType.Bool    => default(bool), FieldType.Decimal => default(decimal),
+            FieldType.Single  => default(float), FieldType.Double => default(double),
+            FieldType.String  => default(string), FieldType.Guid  => default(Guid),
+            FieldType.Object  => throw new InvalidOperationException(),
+            FieldType.List    => throw new InvalidOperationException(),
+            FieldType.InValid => throw new InvalidOperationException(),
+            _                 => throw new ArgumentOutOfRangeException()
+        });
+    }
+
+    public void CreateClassObject(Guid id)
+    {
+        Add(TypeManager.Instance[id].CreateInstance());
+    }
+
+    public void Add(object obj)
+    {
+        List.Add(obj);
+        StateHasChanged();
+    }
+
+    public void RemoveAt(int index)
+    {
+        List.RemoveAt(index);
+        StateHasChanged();
+    }
+
+    public void SetValue(int index, object obj)
+    {
+        List[index] = obj;
+        StateHasChanged();
+    }
+
+}

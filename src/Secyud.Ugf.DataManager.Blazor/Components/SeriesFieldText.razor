@@ -1,0 +1,30 @@
+﻿@using Secyud.Ugf.DataManager
+@inherits SeriesFieldBase
+<Field ColumnSize="ColumnSize.IsAuto">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        @if (FieldAttribute.ShowType == SShowType.Normal)
+        {
+            <TextEdit @bind-Text="Text"/>
+        }
+        else
+        {
+            <MemoEdit @bind-Text="Text"/>
+        }
+        @if (!ParentField.List.IsFixedSize)
+        {
+            <Button Clicked="RemoveSelf" Color="Color.Danger">×</Button>
+        }
+    </FieldBody>
+</Field>
+
+@code {
+
+    public string Text
+    {
+        get => (string)GetValue();
+        set => SetValue(value);
+    }
+}

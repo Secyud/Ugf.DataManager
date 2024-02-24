@@ -1,0 +1,47 @@
+﻿@using Secyud.Ugf.DataManager
+@inherits ObjectFieldBase
+<Field ColumnSize="ColumnSize.IsAuto">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        @if (FieldAttribute.ShowType == SShowType.Special)
+        {
+            <TextEdit @bind-Text="BinaryValue"
+                      MaskType="MaskType.RegEx"
+                      EditMask="^[0-1]*$"/>
+        }
+        else
+        {
+            <NumericEdit @bind-Value="@Value" />
+        }
+    </FieldBody>
+    <FieldHelp>
+        @Description
+    </FieldHelp>
+</Field>
+
+@code {
+    public object Value
+    {
+        get => GetValue();
+        set => SetValue(Convert.ChangeType(value, FieldAttribute.ElementType));
+    }
+    
+    private string BinaryValue
+    {
+        get => Convert.ToString(Convert.ToInt64(Value), 2);
+        set
+        {
+            try
+            {
+                long integer = Convert.ToInt64(value, 2);
+                Value = Convert.ChangeType(integer, FieldAttribute.ElementType);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}

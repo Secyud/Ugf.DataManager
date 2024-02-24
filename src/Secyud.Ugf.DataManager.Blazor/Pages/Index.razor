@@ -1,0 +1,32 @@
+﻿@page "/"
+@inherits DataManagerComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<Fields>
+    <Field>
+        <FieldLabel>
+            Bundle Id
+        </FieldLabel>
+        <FieldBody>
+            <NumericEdit @bind-Value="@_bundle"/>
+        </FieldBody>
+    </Field>
+    <Field>
+        <FieldLabel>
+            是否需要更新数据？
+        </FieldLabel>
+        <FieldBody>
+            <Check @bind-Checked="@_update"/>
+        </FieldBody>
+    </Field>
+    <Field>
+        <FieldLabel>
+            导入数据
+        </FieldLabel>
+        <FieldBody>
+            <FilePicker Upload="ImportDataAsync" ShowMode="FilePickerShowMode.Dropdown"/>
+        </FieldBody>
+    </Field>
+</Fields>
+
+<Button Clicked="CheckBundleAsync">Check</Button>

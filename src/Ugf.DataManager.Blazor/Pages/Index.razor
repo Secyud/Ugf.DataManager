@@ -1,7 +1,0 @@
-﻿@page "/"
-@inherits DataManagerComponentBase
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
-<NumericEdit @bind-Value="@_bundle"></NumericEdit>
-<Check @bind-Checked="@_update"></Check>
-<Button Clicked="CheckBundleAsync">Check</Button>

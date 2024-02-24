@@ -1,0 +1,20 @@
+﻿@inherits ObjectFieldBase
+<Field ColumnSize="ColumnSize.IsAuto">
+    <FieldLabel>
+        @LabelText
+    </FieldLabel>
+    <FieldBody>
+        <Check @bind-Checked="Checked"/>
+    </FieldBody>
+    <FieldHelp>
+        @Description
+    </FieldHelp>
+</Field>
+
+@code {
+    public bool Checked
+    {
+        get => (bool)GetValue();
+        set => SetValue(value);
+    }
+}

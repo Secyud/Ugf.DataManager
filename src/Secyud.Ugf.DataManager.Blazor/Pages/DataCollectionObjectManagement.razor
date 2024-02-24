@@ -1,0 +1,51 @@
+﻿@using Secyud.Ugf.DataManager
+@using Secyud.Ugf.DataManager.Localization
+
+@inherits AbpCrudPageBase<IDataObjectAppService, DataObjectDto, Guid, GetDataObjectListInput>
+@inject AbpBlazorMessageLocalizerHelper<DataManagerResource> Lh
+
+<Fields>
+    <Field ColumnSize="ColumnSize.Is12">
+        <Autocomplete TItem="TypeDescriptor" TValue="Guid"
+                      Data="TypeManager.Instance.GetRegisteredType()"
+                      TextField="u => u.Type.Name"
+                      ValueField="u => u.Type.GUID"
+                      @bind-SelectedValue="@GetListInput.ClassId"
+                      Placeholder="@L["BaseClass"]"/>
+
+    </Field>
+    <Field ColumnSize="ColumnSize.Is6">
+        <TextEdit @bind-Text="@GetListInput.Name" Placeholder="@L["Name"]"/>
+    </Field>
+    <Field ColumnSize="ColumnSize.Is6">
+        <Addons>
+            <Addon AddonType="AddonType.Body">
+                <NumericEdit @bind-Value="@GetListInput.BundleId" Placeholder="@L["BundleName"]"/>
+
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Clicked="SearchEntitiesAsync" Color="Color.Secondary">@L["Search"]</Button>
+            </Addon>
+        </Addons>
+    </Field>
+</Fields>
+
+<Button Clicked="UpdateAsync" Color="Color.Secondary">
+    @L["Submit"]
+</Button>
+<Button Clicked="SelectAll" Color="Color.Secondary">
+    @L["SelectAll"]
+</Button>
+<Button Clicked="DeSelectAll" Color="Color.Secondary">
+    @L["DeSelectAll"]
+</Button>
+@* ************************* DATA GRID ************************* *@
+<AbpExtensibleDataGrid TItem="DataObjectDto"
+                       Data="@Entities"
+                       ReadData="@OnDataGridReadAsync"
+                       TotalItems="@TotalCount"
+                       ShowPager="true"
+                       PageSize="@PageSize"
+                       CurrentPage="@CurrentPage"
+                       Columns="@ObjectTableColumns">
+</AbpExtensibleDataGrid>
