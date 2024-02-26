@@ -37,14 +37,35 @@
                         switch (elementType)
                         {
                             case FieldType.UInt8:
+                                <SeriesFieldInteger TInteger="byte" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.UInt16:
+                                <SeriesFieldInteger TInteger="ushort" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.UInt32:
+                                <SeriesFieldInteger TInteger="uint" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.UInt64:
+                                <SeriesFieldInteger TInteger="ulong" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Int8:
+                                <SeriesFieldInteger TInteger="sbyte" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Int16:
+                                <SeriesFieldInteger TInteger="short" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Int32:
+                                <SeriesFieldInteger TInteger="int" FieldAttribute="FieldAttribute"
+                                                    Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Int64:
-                                <SeriesFieldInteger FieldAttribute="FieldAttribute"
+                                <SeriesFieldInteger TInteger="long" FieldAttribute="FieldAttribute"
                                                     Index="i" ParentField="@this"/>
                                 break;
                             case FieldType.Bool:
@@ -52,9 +73,15 @@
                                                     Index="i" ParentField="@this"/>
                                 break;
                             case FieldType.Decimal:
+                                <SeriesFieldNumber TNumber="decimal" FieldAttribute="FieldAttribute"
+                                                   Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Single:
+                                <SeriesFieldNumber TNumber="float" FieldAttribute="FieldAttribute"
+                                                   Index="i" ParentField="@this"/>
+                                break;
                             case FieldType.Double:
-                                <SeriesFieldNumber FieldAttribute="FieldAttribute"
+                                <SeriesFieldNumber TNumber="double" FieldAttribute="FieldAttribute"
                                                    Index="i" ParentField="@this"/>
                                 break;
                             case FieldType.String:

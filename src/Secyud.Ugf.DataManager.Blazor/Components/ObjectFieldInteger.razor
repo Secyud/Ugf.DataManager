@@ -1,5 +1,6 @@
 ﻿@using Secyud.Ugf.DataManager
 @inherits ObjectFieldBase
+@typeparam TInteger where TInteger :struct
 <Field ColumnSize="ColumnSize.IsAuto">
     <FieldLabel>
         @LabelText
@@ -13,7 +14,7 @@
         }
         else
         {
-            <NumericEdit @bind-Value="@Value" />
+            <NumericEdit TValue="TInteger" @bind-Value="@Value"/>
         }
     </FieldBody>
     <FieldHelp>
@@ -22,12 +23,12 @@
 </Field>
 
 @code {
-    public object Value
+    public TInteger Value
     {
-        get => GetValue();
-        set => SetValue(Convert.ChangeType(value, FieldAttribute.ElementType));
+        get => (TInteger)GetValue();
+        set => SetValue(value);
     }
-    
+
     private string BinaryValue
     {
         get => Convert.ToString(Convert.ToInt64(Value), 2);
@@ -36,7 +37,7 @@
             try
             {
                 long integer = Convert.ToInt64(value, 2);
-                Value = Convert.ChangeType(integer, FieldAttribute.ElementType);
+                Value = (TInteger)Convert.ChangeType(integer, typeof(TInteger));
             }
             catch (Exception e)
             {

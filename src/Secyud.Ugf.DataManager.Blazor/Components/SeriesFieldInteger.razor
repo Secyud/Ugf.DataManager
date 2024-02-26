@@ -1,6 +1,7 @@
 ﻿@using Secyud.Ugf.DataManager
 @using Castle.Core.Internal
 @inherits SeriesFieldBase
+@typeparam TInteger where TInteger :struct
 <Field ColumnSize="ColumnSize.IsAuto">
     <FieldLabel>
         @LabelText
@@ -14,7 +15,7 @@
         }
         else
         {
-            <NumericEdit @bind-Value="@Value" />
+            <NumericEdit TValue="TInteger" @bind-Value="@Value"/>
         }
         @if (!ParentField.List.IsFixedSize)
         {
@@ -24,12 +25,12 @@
 </Field>
 
 @code {
-    public object Value
+    public TInteger Value
     {
-        get => GetValue();
-        set => SetValue(Convert.ChangeType(value, FieldAttribute.ElementType));
+        get => (TInteger)GetValue();
+        set => SetValue(value);
     }
-    
+
     private string BinaryValue
     {
         get => Convert.ToString(Convert.ToInt64(Value), 2);
@@ -38,7 +39,7 @@
             try
             {
                 long integer = Convert.ToInt64(value, 2);
-                Value = Convert.ChangeType(integer, FieldAttribute.ElementType);
+                Value = (TInteger)Convert.ChangeType(integer, FieldAttribute.ElementType);
             }
             catch (Exception e)
             {

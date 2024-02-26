@@ -5,6 +5,7 @@ using Blazorise;
 using Secyud.Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
+
 using Volo.Abp.AspNetCore.Components.Web.Theming.PageToolbars;
 
 namespace Secyud.Ugf.DataManager.Blazor.Pages
@@ -95,7 +96,6 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
         {
             await AppService.GenerateDataAsync(dataConfig.Id);
         }
-
         private Guid ItemConfigId { get; set; }
         
         private async Task OpenItemModalAsync(DataCollectionDto dto)

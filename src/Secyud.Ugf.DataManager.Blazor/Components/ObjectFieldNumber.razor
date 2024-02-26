@@ -1,10 +1,12 @@
 ﻿@inherits ObjectFieldBase
+@typeparam TNumber where TNumber :struct
+
 <Field ColumnSize="ColumnSize.IsAuto">
     <FieldLabel>
         @LabelText
     </FieldLabel>
     <FieldBody>
-        <NumericEdit @bind-Value="@Value"/>
+        <NumericEdit TValue="TNumber" @bind-Value="@Value"/>
     </FieldBody>
     <FieldHelp>
         @Description
@@ -12,9 +14,9 @@
 </Field>
 
 @code {
-    public object Value
+    public TNumber Value
     {
-        get => GetValue();
-        set => SetValue(Convert.ChangeType(value, FieldAttribute.ElementType));
+        get => (TNumber)GetValue();
+        set => SetValue(value);
     }
 }

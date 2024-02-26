@@ -56,22 +56,40 @@
                                     switch (attr.Type)
                                     {
                                         case FieldType.UInt8:
+                                            <ObjectFieldInteger TInteger="byte" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.UInt16:
+                                            <ObjectFieldInteger TInteger="ushort" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.UInt32:
+                                            <ObjectFieldInteger TInteger="uint" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.UInt64:
+                                            <ObjectFieldInteger TInteger="ulong" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Int8:
+                                            <ObjectFieldInteger TInteger="sbyte" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Int16:
+                                            <ObjectFieldInteger TInteger="short" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Int32:
+                                            <ObjectFieldInteger TInteger="int" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Int64:
-                                            <ObjectFieldInteger FieldAttribute="attr" ParentField="@this"/>
+                                            <ObjectFieldInteger TInteger="long" FieldAttribute="attr" ParentField="@this"/>
                                             break;
                                         case FieldType.Bool:
                                             <ObjectFieldBoolean FieldAttribute="attr" ParentField="@this"/>
                                             break;
                                         case FieldType.Decimal:
+                                            <ObjectFieldNumber TNumber="decimal" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Single:
+                                            <ObjectFieldNumber TNumber="float" FieldAttribute="attr" ParentField="@this"/>
+                                            break;
                                         case FieldType.Double:
-                                            <ObjectFieldNumber FieldAttribute="attr" ParentField="@this"/>
+                                            <ObjectFieldNumber TNumber="double" FieldAttribute="attr" ParentField="@this"/>
                                             break;
                                         case FieldType.String:
                                             <ObjectFieldText FieldAttribute="attr" ParentField="@this"/>
@@ -129,4 +147,3 @@
     }
 
 }
-

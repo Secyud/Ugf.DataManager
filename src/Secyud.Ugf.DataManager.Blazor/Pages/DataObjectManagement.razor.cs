@@ -156,7 +156,10 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
         private async Task UpdateObjectDataAsync()
         {
             DataResource resource = new();
+            // resource.Id = 0;
+            // resource.Type = EditingEntity.ClassId;
             resource.SetObject(DataObjectEditingObject);
+            // object obj = resource.GetObject();
             EditingEntity.Data = resource.Data;
             await AppService.UpdateAsync(EditingEntity.Id, EditingEntity);
             await CloseObjectDataModalAsync();
