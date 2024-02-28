@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 
 namespace Secyud.Ugf.DataManager
 {
     public class DataOperationManager(
-        IDataObjectRepository objectRepository, IConfiguration configuration)
+        IDataObjectRepository objectRepository,
+        IDataCollectionRepository collectionRepository,
+        IRepository<DataCollectionObject> coRepository)
         : DomainService
     {
         public async Task CheckObjectsValidAsync(int bundle, bool restore = false)
@@ -50,42 +52,40 @@ namespace Secyud.Ugf.DataManager
             }
         }
 
-        public async Task GenerateConfigAsync(List<Guid> objectIds, string configName)
+        public async Task<byte[]> GenerateBinaryAsync(Guid collectionId)
         {
             Logger.LogInformation("ClassManager: Begin search object");
 
-            List<DataObject> results =
-                (await objectRepository.GetQueryableAsync())
-                .Where(u =>
-                    objectIds.Contains(u.Id) &&
-                    !u.IsDeleted)
-                .ToList();
+            IQueryable<DataObject> objectQuery = await objectRepository.GetQueryableAsync();
+            IQueryable<DataCollectionObject> coQuery = await coRepository.GetQueryableAsync();
+            IQueryable<DataObject> results =
+                from o in objectQuery
+                join co in coQuery 
+                    on o.Id equals co.ObjectId
+                where co.ConfigId == collectionId
+                    select o;
 
-            string path = Path.Combine(configuration["ConfigPath"] ?? AppContext.BaseDirectory, "OutConfigs");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            List<DataObject> list =  results.ToList();
 
-
-            path = Path.Combine(path, $"{configName}.binary");
-
-            Logger.LogInformation("ClassManager: Start write config to path: {Path}", path);
-            await using FileStream stream = File.OpenWrite(path);
+            await using MemoryStream stream = new();
             await using BinaryWriter writer = new(stream);
 
-            writer.Write(results.Count);
+            writer.Write(list.Count);
 
-            foreach (DataObject result in results)
+            foreach (DataObject o in list)
             {
                 DataResource resource = new()
                 {
-                    Id = result.ResourceId,
-                    Type = result.ClassId,
-                    Data = result.Data
+                    Id = o.ResourceId,
+                    Type = o.ClassId,
+                    Data = o.Data
                 };
                 resource.Save(writer);
             }
 
-            Logger.LogInformation("Config successfully write {Count} objects", results.Count);
+            Logger.LogInformation("Config successfully write {Count} objects", list.Count);
+
+            return stream.ToArray();
         }
     }
 }

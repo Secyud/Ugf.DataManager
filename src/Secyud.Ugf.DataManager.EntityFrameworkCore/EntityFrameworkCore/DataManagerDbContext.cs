@@ -54,14 +54,13 @@ public class DataManagerDbContext :
 
     public DbSet<DataObject> DataObjects { get; set; }
     public DbSet<DataCollection> DataCollections { get; set; }
-    
-    
+    public DbSet<DataCollectionObject> DataCollectionObject { get; set; }
+
     #endregion
 
     public DataManagerDbContext(DbContextOptions<DataManagerDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -81,7 +80,7 @@ public class DataManagerDbContext :
 
         /* Configure your own tables/entities inside here */
 
-        
+
         builder.Entity<DataObject>(b =>
         {
             b.ConfigureByConvention();
@@ -90,14 +89,14 @@ public class DataManagerDbContext :
             b.HasIndex(u => u.BundleId);
             b.HasIndex(u => u.ClassId);
         });
-        
+
         builder.Entity<DataCollection>(b =>
         {
             b.ConfigureByConvention();
             b.Property(cs => cs.Name).IsRequired();
             b.HasIndex(u => u.Name);
         });
-            
+
         builder.Entity<DataCollectionObject>(b =>
         {
             b.ConfigureByConvention();
@@ -105,7 +104,7 @@ public class DataManagerDbContext :
             b.HasOne<DataCollection>()
                 .WithMany(p => p.DataCollectionObjects)
                 .HasForeignKey(u => u.ConfigId);
-            b.HasIndex( u => new { u.ConfigId, u.ObjectId });
+            b.HasIndex(u => u.ConfigId);
         });
     }
 }

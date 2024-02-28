@@ -30,9 +30,6 @@
     </Field>
 </Fields>
 
-<Button Clicked="UpdateAsync" Color="Color.Secondary">
-    @L["Submit"]
-</Button>
 <Button Clicked="SelectAll" Color="Color.Secondary">
     @L["SelectAll"]
 </Button>
@@ -49,3 +46,7 @@
                        CurrentPage="@CurrentPage"
                        Columns="@ObjectTableColumns">
 </AbpExtensibleDataGrid>
+
+<Button Clicked="UpdateAsync" Color="Color.Secondary">
+    @L["Submit"]
+</Button>

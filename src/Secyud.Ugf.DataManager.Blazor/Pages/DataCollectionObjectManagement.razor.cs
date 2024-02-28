@@ -126,6 +126,7 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
                 ObjectId = u
             }));
             await DataCollectionAppService.UpdateAsync(CollectionId, DataCollection);
+            await Message.Success("Submit Success!");
         }
 
         private void SelectAll()

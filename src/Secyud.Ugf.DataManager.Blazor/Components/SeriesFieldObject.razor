@@ -11,19 +11,19 @@
     }
     else
     {
+        Type objectType = value.GetType();
         <Accordion>
             <Collapse>
                 <CollapseHeader>
                     <Heading Size="HeadingSize.Is6">
                         <AccordionToggle>
-                            @LabelText - @FieldAttribute.ElementType.Name
+                            @LabelText - @objectType.Name
                         </AccordionToggle>
                     </Heading>
                 </CollapseHeader>
                 <CollapseBody>
                     <Button Clicked="DestroyClassObject" Color="Color.Danger">×</Button>
                     @{
-                        Type objectType = value.GetType();
                         TypeDescriptor descriptor =
                             TypeManager.Instance[objectType];
                         List<SAttribute> list = [];

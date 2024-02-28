@@ -17,13 +17,9 @@ namespace Secyud.Ugf.DataManager
                 input.Name);
         }
 
-        public async Task GenerateDataAsync(Guid id)
+        public async Task<byte[]> GenerateDataAsync(Guid id)
         {
-            DataCollectionDto data = await GetAsync(id);
-
-            List<Guid> guids = data.DataCollectionObjects
-                .Select(u => u.ObjectId).ToList();
-            await manager.GenerateConfigAsync(guids, data.Name);
+           return await manager.GenerateBinaryAsync(id);
         }
     }
 }

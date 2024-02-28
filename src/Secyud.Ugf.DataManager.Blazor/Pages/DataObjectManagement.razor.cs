@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazorise;
 using Microsoft.Extensions.Logging;
@@ -38,23 +39,22 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
                     new()
                     {
                         Text = L["Edit"],
-                        Clicked = async data =>
-                        {
-                            await OpenEditModalAsync(data.As<DataObjectDto>());
-                        }
+                        Clicked = async data => { await OpenEditModalAsync(data.As<DataObjectDto>()); }
                     },
                     new()
                     {
                         Text = L["Data"],
-                        Clicked = async data =>
-                        {
-                            await OpenObjectDataModalAsync(data.As<DataObjectDto>());
-                        }
+                        Clicked = async data => { await OpenObjectDataModalAsync(data.As<DataObjectDto>()); }
+                    },
+                    new()
+                    {
+                        Text = L["Copy"],
+                        Clicked = async data => { await CopyObjectAsync(data.As<DataObjectDto>()); }
                     },
                     new()
                     {
                         Text = L["Delete"],
-                        Clicked = async data => 
+                        Clicked = async data =>
                             await DeleteEntityAsync(data.As<DataObjectDto>()),
                         ConfirmationMessage = data =>
                             GetDeleteConfirmationMessage(data.As<DataObjectDto>())
@@ -93,6 +93,12 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
                     },
                     new()
                     {
+                        Title = L["ResourceId"],
+                        Sortable = true,
+                        Data = nameof(DataObjectDto.ResourceId)
+                    },
+                    new()
+                    {
                         Title = L["Bundle"],
                         Sortable = true,
                         Data = nameof(DataObjectDto.BundleId)
@@ -110,8 +116,7 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
         protected override ValueTask SetToolbarItemsAsync()
         {
             Toolbar.AddButton(L["NewObject"],
-                OpenCreateModalAsync,
-                IconName.Add);
+                OpenCreateModalAsync, IconName.Add);
 
             return base.SetToolbarItemsAsync();
         }
@@ -156,13 +161,27 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
         private async Task UpdateObjectDataAsync()
         {
             DataResource resource = new();
-            // resource.Id = 0;
-            // resource.Type = EditingEntity.ClassId;
             resource.SetObject(DataObjectEditingObject);
-            // object obj = resource.GetObject();
             EditingEntity.Data = resource.Data;
-            await AppService.UpdateAsync(EditingEntity.Id, EditingEntity);
+            await AppService.UpdateAsync(
+                EditingEntity.Id, EditingEntity);
+            await GetEntitiesAsync();
             await CloseObjectDataModalAsync();
+        }
+
+        private async Task CopyObjectAsync(DataObjectDto dto)
+        {
+            DataObjectDto newEntity = new()
+            {
+                Name = dto.Name,
+                ClassId = dto.ClassId,
+                BundleId = dto.BundleId,
+                ResourceId = dto.ResourceId,
+                Data = dto.Data
+            };
+            await AppService.CreateAsync(newEntity);
+            await GetEntitiesAsync();
+            StateHasChanged();
         }
     }
 }

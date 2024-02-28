@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazorise;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Secyud.Ugf.DataManager.Localization;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.EntityActions;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
@@ -12,6 +14,7 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
 {
     public partial class DataCollectionManagement
     {
+        [Inject] public NavigationManager NavigationManager { get; set; }
         private Modal ItemModal { get; set; }
         private DataCollectionObjectManagement Setting { get; set; }
         
@@ -92,9 +95,12 @@ namespace Secyud.Ugf.DataManager.Blazor.Pages
             return base.SetToolbarItemsAsync();
         }
 
-        private async Task GenerateConfigAsync(DataCollectionDto dataConfig)
+        private  Task GenerateConfigAsync(DataCollectionDto dataConfig)
         {
-            await AppService.GenerateDataAsync(dataConfig.Id);
+             NavigationManager.NavigateTo(
+                $"api/DataCollection/DownloadData?id={dataConfig.Id}",
+                true,false);
+             return Task.CompletedTask;
         }
         private Guid ItemConfigId { get; set; }
         

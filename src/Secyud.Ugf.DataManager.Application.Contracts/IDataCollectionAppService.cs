@@ -7,6 +7,6 @@ namespace Secyud.Ugf.DataManager
     public interface IDataCollectionAppService:
         ICrudAppService<DataCollectionDto, Guid, GetDataCollectionListInput>
     {
-        Task GenerateDataAsync(Guid id);
+        Task<byte[]> GenerateDataAsync(Guid id);
     }
 }

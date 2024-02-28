@@ -44,8 +44,8 @@ public class DataManagerEntityFrameworkCoreModule : AbpModule
             options.AddRepository<DataCollection, DataCollectionRepository>();
             options.Entity<DataCollection>(u =>
             {
-                u.DefaultWithDetailsFunc = 
-                    q => q.Include(u => u.DataCollectionObjects);
+                u.DefaultWithDetailsFunc = q => 
+                    q.Include(v => v.DataCollectionObjects);
             });
             options.AddDefaultRepositories(includeAllEntities: true);
         });
